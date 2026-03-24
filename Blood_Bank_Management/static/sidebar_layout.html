@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blood Bank Management System - Sidebar Layout">
+    <title>Dashboard - Blood Bank Management System with Sidebar</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <script src="/static/js/auth.js?v=2"></script>
+    <script>checkAuth(['Admin','Staff']);</script>
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🩸</div>
+            <h2 class="sidebar-title">Blood Bank Mgmt</h2>
+        </div>
+
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a href="/static/index.html" class="sidebar-nav-link active">
+                        <span class="sidebar-nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="/static/profile.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-icon">👤</span>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="/static/donors.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-icon">👥</span>
+                        <span>Donors</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="/static/donor_health.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-icon">🏥</span>
+                        <span>Health Check</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="/static/donations.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-icon">💉</span>
+                        <span>Donations</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="/static/stock.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-icon">📦</span>
+                        <span>Blood Stock</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="/static/requests.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-icon">📋</span>
+                        <span>Requests</span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="/static/hospitals.html" class="sidebar-nav-link">
+                        <span class="sidebar-nav-icon">🏢</span>
+                        <span>Hospitals</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- User Section -->
+        <div class="sidebar-user-section">
+            <div class="user-profile-card">
+                <div class="user-avatar">AD</div>
+                <div class="user-name">Admin User</div>
+                <div class="user-role">Administrator</div>
+                <a href="/logout" class="user-logout">Logout</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content-with-sidebar">
+        <!-- Top Navigation Bar (Optional - can be removed for pure sidebar nav) -->
+        <nav class="sidebar-top-nav">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div class="container" style="flex: 1; overflow-y: auto;">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Blood Bank Dashboard</h1>
+                <p class="page-subtitle">Real-time overview of blood bank operations</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Total Donors</span>
+                        <span class="stat-icon">👥</span>
+                    </div>
+                    <div class="stat-value" id="totalDonors">-</div>
+                    <p class="stat-description">Active registered donors</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Total Donations</span>
+                        <span class="stat-icon">💉</span>
+                    </div>
+                    <div class="stat-value" id="totalDonations">-</div>
+                    <p class="stat-description">All time donations</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Pending Requests</span>
+                        <span class="stat-icon">📋</span>
+                    </div>
+                    <div class="stat-value" id="pendingRequests">-</div>
+                    <p class="stat-description">Awaiting fulfillment</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">This Week</span>
+                        <span class="stat-icon">📅</span>
+                    </div>
+                    <div class="stat-value" id="recentDonations">-</div>
+                    <p class="stat-description">Donations in last 7 days</p>
+                </div>
+            </div>
+
+            <!-- Blood Stock Overview -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Blood Stock by Type</h2>
+                    <span class="card-icon">🩸</span>
+                </div>
+                <div class="grid grid-4" id="stockGrid">
+                    <!-- Stock cards will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <div style="height: 2rem;"></div>
+
+            <!-- Recent Requests -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Blood Requests</h2>
+                    <a href="/static/requests.html" class="btn btn-primary">View All</a>
+                </div>
+                <div class="table-container" id="recentRequestsTable">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Hospital</th>
+                                <th>Blood Group</th>
+                                <th>Quantity (Units)</th>
+                                <th>Urgency</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsBody">
+                            <tr><td colspan="6" style="text-align: center; padding: 2rem;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="height: 2rem;"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/sidebar.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.display = sidebar.style.display === 'none' ? '' : 'none';
+        }
+    </script>
+</body>
+</html>

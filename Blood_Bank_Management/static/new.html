@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard UI</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #f3f4f8;
+    display: flex;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+    width: 230px;
+    background: white;
+    height: 100vh;
+    padding: 25px 20px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+}
+
+.sidebar h2 {
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #444;
+}
+
+.nav-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: #666;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #eef0ff;
+    color: #4f46e5;
+}
+
+/* ========== MAIN CONTENT ========== */
+.main {
+    flex: 1;
+    padding: 30px;
+}
+
+/* Top Bar */
+.topbar {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.search {
+    background: #f3f4f8;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    width: 250px;
+}
+
+/* Cards */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    gap: 20px;
+}
+
+/* PROFILE SECTION */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.profile-card {
+    text-align: center;
+}
+
+.profile-img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #dcdde1;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+.profile-card h3 {
+    margin-bottom: 5px;
+}
+
+.profile-card p {
+    font-size: 14px;
+    color: #888;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.stat-box {
+    background: #f9fafc;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat-box h4 {
+    font-size: 18px;
+    color: #4f46e5;
+}
+
+.stat-box span {
+    font-size: 12px;
+    color: #777;
+}
+
+/* Notifications */
+.notification-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item p {
+    font-size: 14px;
+    color: #666;
+}
+
+.badge {
+    background: #4f46e5;
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 20px;
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Dashboard</h2>
+    <div class="nav-item active">Profile</div>
+    <div class="nav-item">Notifications</div>
+    <div class="nav-item">Settings</div>
+    <div class="nav-item">Logout</div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <h3>Profile Overview</h3>
+        <input type="text" class="search" placeholder="Search...">
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div class="profile-layout">
+
+        <!-- Left Profile Card -->
+        <div class="card profile-card">
+            <div class="profile-img"></div>
+            <h3>John Doe</h3>
+            <p>UI/UX Designer</p>
+        </div>
+
+        <!-- Right Stats & Info -->
+        <div class="grid">
+            <div class="card">
+                <h3 style="margin-bottom:15px;">Statistics</h3>
+                <div class="stats">
+                    <div class="stat-box">
+                        <h4>24</h4>
+                        <span>Tasks</span>
+                    </div>
+                    <div class="stat-box">
+                        <h4>12</h4>
+                        <span>Completed</span>
+                    </div>
+                    <div class="stat-box">
+                        <h4>4</h4>
+                        <span>Pending</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom:15px;">Recent Notifications</h3>
+
+                <div class="notification-item">
+                    <div>
+                        <strong>New Task Assigned</strong>
+                        <p>You have a new design task.</p>
+                    </div>
+                    <span class="badge">New</span>
+                </div>
+
+                <div class="notification-item">
+                    <div>
+                        <strong>Deadline Updated</strong>
+                        <p>Project deadline moved to Friday.</p>
+                    </div>
+                </div>
+
+                <div class="notification-item">
+                    <div>
+                        <strong>Reminder</strong>
+                        <p>Complete pending tasks.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

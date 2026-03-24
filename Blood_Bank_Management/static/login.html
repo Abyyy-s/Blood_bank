@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeLink - Login</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-primary);
+            font-family: 'DM Sans', sans-serif;
+        }
+        .login-card {
+            width: 800px;
+            max-width: 95%;
+            display: flex;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease;
+        }
+        .login-left {
+            flex: 1.2;
+            background: #f9f9f9 url('') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .login-left .logo-icon {
+            font-size: 3rem;
+            color: #B11226;
+            margin-bottom: 1rem;
+        }
+        .login-left .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .login-left .logo-svg {
+            width: 80px;
+            height: 80px;
+            filter: drop-shadow(0 4px 8px rgba(13, 92, 127, 0.2));
+        }
+        .login-left .title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        .login-left .title .life-text {
+            color: #0d5c7f;
+        }
+        .login-left .title .link-text {
+            color: #B11226;
+        }
+        .login-left .tagline {
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 16px;
+            text-align: center;
+        }
+        .login-right {
+            flex: 1;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .login-form {
+            width: 100%;
+        }
+        .login-form .form-group {
+            margin-bottom: 1rem;
+        }
+        .login-form label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .login-form input,
+        .login-form select {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+            transition: border var(--transition-fast);
+        }
+        .login-form input:focus,
+        .login-form select:focus {
+            border-color: #0d5c7f;
+            outline: none;
+        }
+        .form-error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, #0d5c7f 0%, #1b7fa0 100%);
+            color: white;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-login:hover {
+            background: #8e0f1e;
+        }
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: default;
+        }
+        .spinner-small {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+        .show-hide {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .login-card { flex-direction: column; }
+            .login-left { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-left">
+            <div class="logo-section">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Blood Drop -->
+                    <path d="M50 15 C35 30, 25 45, 25 60 C25 75, 36.25 85, 50 85 C63.75 85, 75 75, 75 60 C75 45, 65 30, 50 15 Z" fill="#B11226"/>
+                    <!-- Heartbeat Line -->
+                    <path d="M30 55 L40 55 L45 50 L50 60 L55 45 L60 55 L70 55" stroke="#0d5c7f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="title"><span class="life-text">Life</span><span class="link-text">Link</span></div>
+            <div class="tagline">Connecting Lives Through Every Drop</div>
+        </div>
+        <div class="login-right">
+            <form id="loginForm" class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="form-error" id="errorEmail"></div>
+                </div>
+                <div class="form-group" style="position:relative;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <span class="show-hide" onclick="togglePassword()">Show</span>
+                    <div class="form-error" id="errorPassword"></div>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Staff">Staff</option>
+                        <option value="Hospital">Hospital</option>
+                    </select>
+                    <div class="form-error" id="errorRole"></div>
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn">
+                    LOGIN
+                </button>
+                <div style="margin-top: 0.5rem; text-align: right;"><a href="#" style="font-size:0.85rem; color:var(--primary-color);">Forgot Password?</a></div>
+                <div class="form-error" id="errorGeneral"></div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const toggle = document.querySelector('.show-hide');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                toggle.textContent = 'Hide';
+            } else {
+                pw.type = 'password';
+                toggle.textContent = 'Show';
+            }
+        }
+        async function handleLogin(e) {
+            e.preventDefault();
+            clearErrors();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            if (!email || !password || !role) {
+                if (!email) showError('errorEmail','Required');
+                if (!password) showError('errorPassword','Required');
+                if (!role) showError('errorRole','Required');
+                return;
+            }
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner-small';
+            btn.appendChild(spinner);
+            try {
+                const res = await fetch('/login', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({email,password,role})
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showError('errorGeneral', data.error || 'Login failed');
+                    btn.disabled = false;
+                    spinner.remove();
+                    return;
+                }
+                // redirect based on role
+                const dest = role.toLowerCase() + '-dashboard';
+                window.location.href = '/' + dest;
+            } catch(err) {
+                showError('errorGeneral', 'Network error');
+                btn.disabled = false;
+                spinner.remove();
+            }
+        }
+        function clearErrors() {
+            ['errorEmail','errorPassword','errorRole','errorGeneral'].forEach(id=>{
+                document.getElementById(id).textContent = '';
+            });
+        }
+        function showError(id,msg) {
+            document.getElementById(id).textContent = msg;
+        }
+    </script>
+</body>
+</html>

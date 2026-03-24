@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage blood donors - Register, view, and update donor information">
+    <title>Donors - Blood Bank Management System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <script src="/static/js/auth.js?v=2"></script>
+    <script>checkAuth(['Admin','Staff']);</script>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🩸</div>
+            <h2 class="sidebar-title">Life Link</h2>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Health Screening</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-box"></i></span><span>Blood Stock</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span><span>Requests</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital-user"></i></span><span>Hospitals</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li>
+                <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="main-content-with-sidebar">
+        <nav class="sidebar-top-nav">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
+            </div>
+        </nav>
+        <!-- Main Content -->
+    <div class="container">
+        <script src="/static/js/sidebar.js"></script>
+    <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Donor Management</h1>
+            <p class="page-subtitle">Register and manage blood donors</p>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div style="flex: 1; min-width: 250px;">
+                    <input type="text" id="searchInput" class="form-input" placeholder="🔍 Search by name, email, or phone...">
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <select id="filterBloodGroup" class="form-select" style="min-width: 150px;">
+                        <option value="">All Blood Groups</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openRegisterModal()">
+                        <span>➕</span>
+                        <span>Register Donor</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donors Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">All Donors</h2>
+                <span class="card-icon">👥</span>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Blood Group</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Contact</th>
+                            <th>City</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donorsTableBody">
+                        <tr>
+                            <td colspan="9" style="text-align: center;">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Donor Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Register New Donor</h2>
+                <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
+            </div>
+            <form id="registerForm" onsubmit="registerDonor(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" name="name" class="form-input" required>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Age *</label>
+                        <input type="number" name="age" class="form-input" min="18" max="65" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender *</label>
+                        <select name="gender" class="form-select" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Blood Group *</label>
+                        <select name="blood_group" class="form-select" required>
+                            <option value="">Select Blood Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Number *</label>
+                        <input type="tel" name="contact" class="form-input" pattern="[0-9]{10}" placeholder="10 digit number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-input" placeholder="donor@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <textarea name="address" class="form-textarea" placeholder="Enter full address"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" name="city" class="form-input" placeholder="Enter city">
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeRegisterModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Register Donor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Donor Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Donor</h2>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm" onsubmit="updateDonor(event)">
+                <input type="hidden" name="donor_id" id="editDonorId">
+                
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" name="name" id="editName" class="form-input" required>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Age *</label>
+                        <input type="number" name="age" id="editAge" class="form-input" min="18" max="65" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender *</label>
+                        <select name="gender" id="editGender" class="form-select" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Blood Group *</label>
+                        <select name="blood_group" id="editBloodGroup" class="form-select" required>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Number *</label>
+                        <input type="tel" name="contact" id="editContact" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" id="editEmail" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" name="city" id="editCity" class="form-input">
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success">Update Donor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/js/donors.js?v=2"></script>
+</body>
+</html>

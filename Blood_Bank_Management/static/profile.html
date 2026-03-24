@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Blood Bank Management System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .profile-container {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(192, 57, 43, 0.1);
+            flex: 1;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0e6e6;
+            padding-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .profile-title {
+            margin: 0;
+            color: #1a0a0a;
+        }
+
+        .profile-role {
+            color: #c0392b;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .info-grid.single {
+            grid-template-columns: 1fr;
+        }
+
+        .info-item {
+            background: #fdf6f6;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #c0392b;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #9e7272;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #1a0a0a;
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #c0392b;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .badge.admin {
+            background: #c0392b;
+        }
+
+        .badge.staff {
+            background: #e74c3c;
+        }
+
+        .badge.hospital {
+            background: #8e1a0e;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #1a0a0a;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c0392b;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script src="/static/js/auth.js?v=2"></script>
+    <script>checkAuth(['Admin','Staff','Hospital']);</script>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🩸</div>
+            <h2 class="sidebar-title">Life Link</h2>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Health Screening</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-box"></i></span><span>Blood Stock</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span><span>Requests</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital-user"></i></span><span>Hospitals</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li>
+                <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="main-content-with-sidebar">
+        <nav class="sidebar-top-nav">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
+            </div>
+        </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <script src="/static/js/sidebar.js"></script>
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Profile Overview</h1>
+            <p class="page-subtitle">Your account information and details</p>
+        </div>
+
+        <!-- Profile Container -->
+        <div class="profile-container">
+            <div class="profile-card" id="profileCard">
+                <!-- Profile content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/profile.js"></script>
+</body>
+</html>

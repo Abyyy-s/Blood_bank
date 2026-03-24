@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Donor Health Screening Management">
+    <title>Health Screening - Blood Bank Management System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <script src="/static/js/auth.js?v=2"></script>
+    <script>checkAuth(['Admin','Staff']);</script>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🩸</div>
+            <h2 class="sidebar-title">Life Link</h2>
+        </div>
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Health Screening</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-box"></i></span><span>Blood Stock</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span><span>Requests</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital-user"></i></span><span>Hospitals</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li>
+                <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="main-content-with-sidebar">
+        <nav class="sidebar-top-nav">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
+            </div>
+        </nav>
+        <!-- Main Content -->
+    <div class="container">
+        <script src="/static/js/sidebar.js"></script>
+    <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Health Screening Records</h1>
+            <p class="page-subtitle">Record and manage donor health screenings</p>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" onclick="openScreeningModal()">
+                    <span>➕</span>
+                    <span>New Health Screening</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Screening Records Table -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">All Health Screenings</h2>
+                <span class="card-icon">🏥</span>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Screening ID</th>
+                            <th>Donor Name</th>
+                            <th>Age</th>
+                            <th>Date</th>
+                            <th>Hemoglobin</th>
+                            <th>BP</th>
+                            <th>Weight (kg)</th>
+                            <th>Disease Detected</th>
+                            <th>Eligibility</th>
+                        </tr>
+                    </thead>
+                    <tbody id="screeningsTableBody">
+                        <tr>
+                            <td colspan="9" style="text-align: center;">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Screening Modal -->
+    <div id="screeningModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Record Health Screening</h2>
+                <button class="modal-close" onclick="closeScreeningModal()">&times;</button>
+            </div>
+            <form id="screeningForm" onsubmit="recordScreening(event)">
+                <div class="form-group">
+                    <label class="form-label">Select Donor *</label>
+                    <select name="donor_id" class="form-select" required>
+                        <option value="">Choose a donor...</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Hemoglobin Level (g/dL) *</label>
+                        <input type="number" name="hemoglobin_level" step="0.1" class="form-input" placeholder="e.g., 13.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Blood Pressure</label>
+                        <input type="text" name="bp" class="form-input" placeholder="e.g., 120/80">
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Weight (kg)</label>
+                        <input type="number" name="weight" step="0.1" class="form-input" placeholder="e.g., 70.5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Eligibility Status *</label>
+                        <select name="eligibility_status" class="form-select" required>
+                            <option value="">Select Status</option>
+                            <option value="Eligible">✅ Eligible</option>
+                            <option value="Not Eligible">❌ Not Eligible</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Disease Detected (if any)</label>
+                    <input type="text" name="disease_detected" class="form-input" placeholder="None or specify disease">
+                </div>
+
+                <div class="alert alert-info" style="margin-top: 1rem;">
+                    <span>ℹ</span>
+                    <span>After saving, note the <strong>Screening ID</strong> for recording donations</span>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeScreeningModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Record Screening</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/static/js/donor_health.js?v=2"></script>
+</body>
+</html>

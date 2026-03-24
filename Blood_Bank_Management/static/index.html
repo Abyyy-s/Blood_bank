@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blood Bank Management System - Manage blood donations, inventory, and requests efficiently">
+    <title>Dashboard - Blood Bank Management System</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <script src="/static/js/auth.js?v=2"></script>
+    <script>checkAuth(['Admin','Staff']);</script>
+    <!-- Sidebar Navigation (replaces top nav) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🩸</div>
+            <h2 class="sidebar-title">Life Link</h2>
+        </div>
+
+        <nav>
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Health Screening</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-box"></i></span><span>Blood Stock</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span><span>Requests</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital-user"></i></span><span>Hospitals</span></a></li>
+                <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li>
+                <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div class="main-content-with-sidebar">
+        <nav class="sidebar-top-nav">
+            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
+            </div>
+        </nav>
+        <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Blood Bank Dashboard</h1>
+            <p class="page-subtitle">Real-time overview of blood bank operations</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Donors</span>
+                    <span class="stat-icon">👥</span>
+                </div>
+                <div class="stat-value" id="totalDonors">-</div>
+                <p class="stat-description">Active registered donors</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Donations</span>
+                    <span class="stat-icon">💉</span>
+                </div>
+                <div class="stat-value" id="totalDonations">-</div>
+                <p class="stat-description">All time donations</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Pending Requests</span>
+                    <span class="stat-icon">📋</span>
+                </div>
+                <div class="stat-value" id="pendingRequests">-</div>
+                <p class="stat-description">Awaiting fulfillment</p>
+            </div>
+        </div>
+
+        <!-- Blood Stock Overview -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Blood Stock by Type</h2>
+                <span class="card-icon">🩸</span>
+            </div>
+            <div class="grid grid-4" id="stockGrid">
+                <!-- Stock cards will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <div style="height: 2rem;"></div>
+
+        <!-- Recent Requests -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Recent Blood Requests</h2>
+                <a href="/static/requests.html" class="btn btn-primary">View All</a>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Hospital</th>
+                            <th>Blood Group</th>
+                            <th>Component</th>
+                            <th>Quantity</th>
+                            <th>Urgency</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center;">
+                                <div class="spinner"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/sidebar.js"></script>
+    <script src="/static/js/dashboard.js?v=2"></script>
+</body>
+</html>
