@@ -5,15 +5,18 @@ from MySQLdb.cursors import DictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import traceback
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__, static_folder="static")
-app.secret_key = os.urandom(24)
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 CORS(app)
 
-app.config['MYSQL_HOST']     = 'localhost'
-app.config['MYSQL_USER']     = 'root'
-app.config['MYSQL_PASSWORD'] = 'Aby26-05-2006'
-app.config['MYSQL_DB']       = 'blood_bank_db'
+app.config['MYSQL_HOST'] = os.getenv("MYSQL_HOST")
+app.config['MYSQL_USER'] = os.getenv("MYSQL_USER")
+app.config['MYSQL_PASSWORD'] = os.getenv("MYSQL_PASSWORD")
+app.config['MYSQL_DB'] = os.getenv("MYSQL_DB")
 
 mysql = MySQL(app)
 
@@ -471,16 +474,45 @@ def donations():
                     VALUES (%s,%s,%s,%s,CURDATE(),%s,%s,DATE_ADD(CURDATE(), INTERVAL %s DAY))
                 """, (data.get('donor_id'), blood_group, bank_id, data.get('screening_id'),
                       component, qty, expiry_days))
+            
             cur2.execute("""
-                INSERT INTO blood_stock (bank_id, blood_group, component_type, quantity_units, status)
-                VALUES (%s,%s,%s,%s, CASE WHEN %s<=0 THEN 'Out of Stock' WHEN %s<=5 THEN 'Low' ELSE 'Available' END)
-                ON DUPLICATE KEY UPDATE
-                    quantity_units = quantity_units + VALUES(quantity_units),
-                    status = CASE
-                        WHEN quantity_units + VALUES(quantity_units) = 0 THEN 'Out of Stock'
-                        WHEN quantity_units + VALUES(quantity_units) <= 5 THEN 'Low'
-                        ELSE 'Available' END
-            """, (bank_id, blood_group, component, qty, qty, qty))
+    INSERT INTO blood_stock (
+        bank_id,
+        blood_group,
+        component_type,
+        expiry_date,
+        quantity_units,
+        status
+    )
+    VALUES (
+        %s,
+        %s,
+        %s,
+        DATE_ADD(COALESCE(%s, CURDATE()), INTERVAL %s DAY),
+        %s,
+        CASE
+            WHEN %s <= 0 THEN 'Out of Stock'
+            WHEN %s <= 5 THEN 'Low'
+            ELSE 'Available'
+        END
+    )
+    ON DUPLICATE KEY UPDATE
+        quantity_units = quantity_units + VALUES(quantity_units),
+        status = CASE
+            WHEN quantity_units + VALUES(quantity_units) = 0 THEN 'Out of Stock'
+            WHEN quantity_units + VALUES(quantity_units) <= 5 THEN 'Low'
+            ELSE 'Available'
+        END
+""", (
+    bank_id,
+    blood_group,
+    component,
+    donation_date,
+    expiry_days,
+    qty,
+    qty,
+    qty
+))
             mysql.connection.commit()
             cur2.close()
             cur.close()

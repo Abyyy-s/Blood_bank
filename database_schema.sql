@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS donor (
 CREATE TABLE IF NOT EXISTS donor_health (
     health_id INT PRIMARY KEY AUTO_INCREMENT,
     donor_id INT NOT NULL,
+    hemoglobin_level DECIMAL(4,1),
     screening_date DATE,
     bp VARCHAR(20),
     weight DECIMAL(5,2),
@@ -50,6 +51,7 @@ CREATE TABLE IF NOT EXISTS donor_health (
 CREATE TABLE IF NOT EXISTS donation (
     donation_id INT PRIMARY KEY AUTO_INCREMENT,
     donor_id INT NOT NULL,
+    blood_group VARCHAR(5) NOT NULL,
     bank_id INT NOT NULL,
     screening_id INT NOT NULL,
     donation_date DATE NOT NULL,
