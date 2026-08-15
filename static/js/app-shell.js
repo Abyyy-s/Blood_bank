@@ -54,12 +54,16 @@
             item.innerHTML = '<a href="/static/notifications.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-bell"></i></span><span>Notifications</span></a>';
             if (logout) nav.insertBefore(item, logout); else nav.appendChild(item);
         }
+        // Settings is part of the shared account navigation. Inject it even on legacy pages
+        // that predate the modern shell so every workspace has the same route to account settings.
         if (!nav.querySelector('a[href*="settings"]')) {
             const logout = nav.querySelector('.logout-link')?.closest('li');
             const item = document.createElement('li'); item.className = 'sidebar-nav-item sidebar-settings-item';
             item.innerHTML = '<a href="/static/settings.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-sliders"></i></span><span>Settings</span></a>';
             if (logout) nav.insertBefore(item, logout); else nav.appendChild(item);
         }
+        const settingsLink = nav.querySelector('a[href*="settings"]');
+        if (settingsLink && page === 'settings') settingsLink.classList.add('active');
     }
     function composeTopbar(meta) {
         const topbar = document.querySelector('.sidebar-top-nav'); if (!topbar) return;
