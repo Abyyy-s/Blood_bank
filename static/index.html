@@ -1,89 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Life Link blood bank operations dashboard">
-    <title>Life Link · Operations</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Life Link blood bank operations dashboard"><title>Dashboard — Life Link</title>
+<link rel="stylesheet" href="/static/css/style.css"><link rel="stylesheet" href="/static/css/dashboard-redesign.css?v=1"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="app-page">
-    <script src="/static/js/auth.js?v=2"></script>
-    <script>checkAuth(['Admin','Staff']);</script>
-
-    <aside class="sidebar" aria-label="Primary navigation">
-        <div class="sidebar-header">
-            <div class="sidebar-logo" aria-hidden="true">🩸</div>
-            <h1 class="sidebar-title">Life Link</h1>
-        </div>
-        <nav>
-            <ul class="sidebar-nav">
-                <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-grid-2"></i></span><span>Overview</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-heart-pulse"></i></span><span>Screening</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hand-holding-droplet"></i></span><span>Donations</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-boxes-stacked"></i></span><span>Inventory</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-clipboard-list"></i></span><span>Requests</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Hospitals</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-column"></i></span><span>Reports</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/notifications.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-bell"></i></span><span>Notifications</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
-                <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-arrow-right-from-bracket"></i></span><span>Sign out</span></a></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <main class="main-content-with-sidebar">
-        <header class="sidebar-top-nav">
-            <div style="display:flex;align-items:center;gap:14px;min-width:0;">
-                <button class="sidebar-toggle" type="button" aria-label="Toggle navigation" onclick="document.querySelector('.sidebar').classList.toggle('is-open')">☰</button>
-                <div>
-                    <div style="font-size:.72rem;color:#83919a;letter-spacing:.08em;text-transform:uppercase;">Operations center</div>
-                    <div id="userGreeting" class="user-greeting" style="position:relative;transform:none;right:auto;top:auto;"></div>
-                </div>
-            </div>
-            <a href="/static/requests.html" class="btn btn-primary" style="white-space:nowrap;"><i class="fas fa-plus"></i> New request</a>
-        </header>
-
-        <div class="container">
-            <section class="page-header">
-                <div>
-                    <h2 class="page-title">Good to see you.</h2>
-                    <p class="page-subtitle">A live view of donors, inventory and requests that need attention.</p>
-                </div>
-            </section>
-
-            <section class="stats-grid" aria-label="Key metrics">
-                <article class="stat-card"><div class="stat-header"><span class="stat-label">Registered donors</span><span class="stat-icon">👥</span></div><div class="stat-value" id="totalDonors">-</div><p class="stat-description">People in the donor registry</p></article>
-                <article class="stat-card"><div class="stat-header"><span class="stat-label">Donations recorded</span><span class="stat-icon">🩸</span></div><div class="stat-value" id="totalDonations">-</div><p class="stat-description">All recorded donations</p></article>
-                <article class="stat-card"><div class="stat-header"><span class="stat-label">Pending requests</span><span class="stat-icon">⏱</span></div><div class="stat-value" id="pendingRequests">-</div><p class="stat-description">Requests awaiting action</p></article>
-            </section>
-
-            <section class="card" style="margin-bottom:18px;">
-                <div class="card-header">
-                    <div><h3 class="card-title">Inventory snapshot</h3><p style="margin-top:3px;color:var(--ll-muted);font-size:.8rem;">Available units grouped by blood type</p></div>
-                    <a href="/static/stock.html" class="btn btn-outline">Open inventory</a>
-                </div>
-                <div class="grid grid-4" id="stockGrid"><div class="spinner" aria-label="Loading inventory"></div></div>
-            </section>
-
-            <section class="card">
-                <div class="card-header">
-                    <div><h3 class="card-title">Requests needing attention</h3><p style="margin-top:3px;color:var(--ll-muted);font-size:.8rem;">Most recent hospital requests</p></div>
-                    <a href="/static/requests.html" class="btn btn-outline">View all</a>
-                </div>
-                <div class="table-container">
-                    <table class="table">
-                        <thead><tr><th>ID</th><th>Hospital</th><th>Blood</th><th>Component</th><th>Units</th><th>Urgency</th><th>Status</th><th>Date</th></tr></thead>
-                        <tbody id="requestsTableBody"><tr><td colspan="8" style="text-align:center;"><div class="spinner"></div></td></tr></tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <script src="/static/js/sidebar.js"></script>
-    <script src="/static/js/dashboard.js?v=2"></script>
-</body>
-</html>
+<body class="app-page dashboard-page ll-dashboard-redesign">
+<script src="/static/js/auth.js?v=2"></script><script>checkAuth(['Admin','Staff']);</script>
+<aside class="sidebar ll-dashboard-sidebar" aria-label="Primary navigation">
+<div class="sidebar-header ll-brand"><div class="sidebar-logo" aria-hidden="true"><i class="fas fa-heart-pulse"></i></div><div><h2 class="sidebar-title">Life Link</h2><p class="sidebar-subtitle">Blood operations</p></div></div>
+<nav>
+<p class="ll-nav-caption">Workspace</p><ul class="sidebar-nav"><li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link active" title="Dashboard"><span class="sidebar-nav-icon"><i class="fas fa-chart-pie"></i></span><span>Dashboard</span></a></li><li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link" title="Profile"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li></ul>
+<p class="ll-nav-caption">Clinical</p><ul class="sidebar-nav"><li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link" title="Donors"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li><li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link" title="Health Screening"><span class="sidebar-nav-icon"><i class="fas fa-heartbeat"></i></span><span>Screening</span></a></li><li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link" title="Donations"><span class="sidebar-nav-icon"><i class="fas fa-hand-holding-droplet"></i></span><span>Donations</span></a></li></ul>
+<p class="ll-nav-caption">Operations</p><ul class="sidebar-nav"><li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link" title="Blood Stock"><span class="sidebar-nav-icon"><i class="fas fa-droplet"></i></span><span>Inventory</span></a></li><li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link" title="Requests"><span class="sidebar-nav-icon"><i class="fas fa-clipboard-list"></i></span><span>Requests</span></a></li><li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link" title="Hospitals"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Hospitals</span></a></li><li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link" title="Reports"><span class="sidebar-nav-icon"><i class="fas fa-chart-column"></i></span><span>Reports</span></a></li></ul>
+</nav><a href="/logout" class="sidebar-nav-link logout-link ll-logout" title="Logout"><span class="sidebar-nav-icon"><i class="fas fa-arrow-right-from-bracket"></i></span><span>Logout</span></a>
+</aside>
+<div class="main-content-with-sidebar ll-dashboard-main">
+<nav class="sidebar-top-nav ll-dashboard-topbar"><div class="topbar-content"><div class="ll-breadcrumb"><span class="topbar-context-dot"></span><span>Operations centre</span><strong>/</strong><span>Dashboard</span></div><div class="ll-top-actions"><button class="ll-icon-button" type="button" aria-label="Search"><i class="fas fa-search"></i></button><button class="ll-icon-button" type="button" aria-label="Notifications"><i class="far fa-bell"></i></button><div id="userGreeting" class="user-greeting"></div></div></div></nav>
+<main class="container dashboard-container ll-dashboard-container">
+<header class="ll-dashboard-hero"><div><p class="page-eyebrow"><i class="fas fa-wave-square" aria-hidden="true"></i> Live blood network</p><h1 class="page-title">Good evening. The network is live.</h1><p class="page-subtitle">A focused view of supply, donor activity and hospital demand — with the urgent work kept close.</p></div><div class="ll-hero-actions"><a href="/static/requests.html" class="btn btn-primary"><i class="fas fa-arrow-right"></i> Review requests</a><a href="/static/stock.html" class="btn btn-secondary"><i class="fas fa-droplet"></i> Open inventory</a></div></header>
+<section class="ll-metric-strip" aria-label="Key metrics"><article class="ll-metric"><div class="ll-metric-icon ll-icon-red"><i class="fas fa-users"></i></div><div><span>Registered donors</span><strong id="totalDonors">-</strong><small>active records</small></div></article><article class="ll-metric"><div class="ll-metric-icon ll-icon-coral"><i class="fas fa-hand-holding-droplet"></i></div><div><span>Recorded donations</span><strong id="totalDonations">-</strong><small>all time</small></div></article><article class="ll-metric ll-metric-alert"><div class="ll-metric-icon ll-icon-amber"><i class="fas fa-bolt"></i></div><div><span>Pending requests</span><strong id="pendingRequests">-</strong><small>awaiting action</small></div><a href="/static/requests.html" aria-label="Open pending requests"><i class="fas fa-arrow-up-right-from-square"></i></a></article></section>
+<section class="ll-main-grid">
+<article class="ll-panel ll-network-panel"><div class="ll-panel-heading"><div><p class="section-kicker">Inventory</p><h2>Blood circulation</h2><span>Eight groups · live availability</span></div><div class="ll-legend"><span><i class="dot dot-good"></i> Healthy</span><span><i class="dot dot-normal"></i> Normal</span><span><i class="dot dot-low"></i> Low</span></div></div><div class="ll-blood-network"><div class="ll-orbit ll-orbit-one"></div><div class="ll-orbit ll-orbit-two"></div><div class="ll-network-center"><i class="fas fa-droplet"></i><strong id="dashboardTotalUnits">0</strong><span>units circulating</span></div><div id="stockGrid" class="dashboard-stock-grid ll-blood-groups" aria-live="polite"></div></div></article>
+<aside class="ll-panel ll-queue-panel"><div class="ll-panel-heading"><div><p class="section-kicker">Hospital demand</p><h2>Request queue</h2><span>Latest active requests</span></div><a href="/static/requests.html" class="ll-text-link">View all <i class="fas fa-arrow-right"></i></a></div><div id="requestActivity" class="request-activity ll-request-list" aria-live="polite"></div><a class="ll-queue-footer" href="/static/requests.html">Open request workspace <i class="fas fa-arrow-right"></i></a></aside>
+</section>
+<section class="ll-bottom-grid"><article class="ll-panel ll-watch-panel"><div class="ll-panel-heading"><div><p class="section-kicker">Attention</p><h2>Inventory watch</h2><span>Groups approaching critical levels</span></div><a href="/static/stock.html" class="ll-text-link">Inventory <i class="fas fa-arrow-right"></i></a></div><div id="inventoryWatch" class="inventory-watch" aria-live="polite"></div></article><article class="ll-panel ll-recent-panel"><div class="ll-panel-heading"><div><p class="section-kicker">Recent activity</p><h2>Hospital requests</h2><span>Latest five requests</span></div><a href="/static/requests.html" class="ll-text-link">Full queue <i class="fas fa-arrow-right"></i></a></div><div class="table-container ll-table-wrap"><table class="table"><thead><tr><th>ID</th><th>Hospital</th><th>Group</th><th>Qty</th><th>Urgency</th><th>Status</th></tr></thead><tbody id="requestsTableBody"><tr><td colspan="6" class="ll-loading"><div class="spinner"></div></td></tr></tbody></table></div></article></section>
+</main></div>
+<script src="/static/js/app-shell.js?v=1"></script><script src="/static/js/sidebar.js"></script><script src="/static/js/dashboard.js?v=3"></script>
+</body></html>

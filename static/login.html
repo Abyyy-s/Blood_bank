@@ -4,80 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Life Link blood bank operations platform">
-    <title>Life Link · Sign in</title>
+    <title>Life Link — Blood Bank Operations</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="/static/css/app-redesign.css?v=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body.login-page { min-height:100vh; background:#09171e; color:#fff; display:grid; place-items:center; padding:24px; overflow:hidden; }
-        .login-shell { width:min(1120px,100%); min-height:680px; display:grid; grid-template-columns:1.15fr .85fr; overflow:hidden; border:1px solid rgba(255,255,255,.1); border-radius:28px; background:#10232c; box-shadow:0 30px 100px rgba(0,0,0,.35); animation:loginIn .65s cubic-bezier(.2,.8,.2,1) both; }
-        .login-story { position:relative; padding:56px; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; background:radial-gradient(circle at 80% 15%,rgba(177,18,38,.35),transparent 38%),linear-gradient(145deg,#112a35,#0b1c24); }
-        .login-story::after { content:''; position:absolute; width:360px; height:360px; border:1px solid rgba(255,255,255,.07); border-radius:50%; right:-150px; bottom:-150px; box-shadow:0 0 0 70px rgba(255,255,255,.025),0 0 0 140px rgba(255,255,255,.018); }
-        .login-brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:-.02em; font-size:1.1rem; position:relative; z-index:1; }
-        .login-mark { width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#b11226;box-shadow:0 12px 30px rgba(177,18,38,.35); }
-        .login-hero { position:relative; z-index:1; max-width:560px; }
-        .login-eyebrow { display:inline-flex; gap:8px; align-items:center; color:#ffb9c3; font-size:.72rem; font-weight:750; letter-spacing:.1em; text-transform:uppercase; margin-bottom:20px; }
-        .login-hero h1 { font-size:clamp(2.8rem,5vw,5rem); line-height:.95; letter-spacing:-.065em; margin:0 0 22px; }
-        .login-hero h1 span { color:#ff536f; }
-        .login-hero p { color:rgba(255,255,255,.67); font-size:1rem; max-width:470px; line-height:1.7; }
-        .login-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; }
-        .login-pill { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); border-radius:999px; padding:8px 11px; color:rgba(255,255,255,.7); font-size:.76rem; }
-        .login-story-footer { position:relative;z-index:1;color:rgba(255,255,255,.38);font-size:.72rem;letter-spacing:.04em; }
-        .login-form-panel { background:#f8fafb; color:#10202b; padding:56px 52px; display:flex; align-items:center; }
-        .login-form-wrap { width:100%; max-width:390px; margin:auto; }
-        .login-form-wrap h2 { font-size:1.8rem; letter-spacing:-.04em; margin-bottom:7px; }
-        .login-form-wrap .intro { color:#6b7a83; font-size:.88rem; margin-bottom:28px; }
-        .login-form .form-group { margin-bottom:17px; }
-        .login-form label { display:block; font-size:.78rem; font-weight:750; color:#40525d; margin-bottom:7px; }
-        .login-field { position:relative; }
-        .login-form input,.login-form select { width:100%; height:48px; border:1px solid #dce3e7; border-radius:11px; padding:0 14px; background:#fff; color:#10202b; font:inherit; outline:none; transition:border-color .2s,box-shadow .2s,transform .2s; }
-        .login-form input:focus,.login-form select:focus { border-color:#0d5c7f; box-shadow:0 0 0 4px rgba(13,92,127,.09); }
-        .show-hide { position:absolute;right:13px;top:50%;transform:translateY(-50%);color:#687982;font-size:.75rem;font-weight:700;cursor:pointer; }
-        .btn-login { width:100%;height:48px;border:0;border-radius:11px;background:#b11226;color:#fff;font:700 .9rem 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 10px 22px rgba(177,18,38,.2);transition:transform .2s,background .2s; }
-        .btn-login:hover { transform:translateY(-1px);background:#8d0d1e; }
-        .btn-login:disabled { opacity:.65;cursor:not-allowed;transform:none; }
-        .login-meta { display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:.72rem;color:#819099; }
-        .login-meta a { color:#0d5c7f;text-decoration:none;font-weight:700; }
-        .form-error { color:#b11226;font-size:.75rem;margin-top:5px;min-height:14px; }
-        .spinner-small { display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-left:8px;vertical-align:-3px; }
-        @keyframes loginIn { from { opacity:0; transform:translateY(18px) scale(.985); } to { opacity:1; transform:none; } }
-        @media (prefers-reduced-motion:reduce) { .login-shell { animation:none; } }
-        @media (max-width:820px) { .login-shell { grid-template-columns:1fr; min-height:0; } .login-story { min-height:330px; padding:34px; } .login-hero h1 { font-size:3.1rem; } .login-form-panel { padding:36px 28px; } }
+        :root { --role-accent: #d12d43; }
+        body.lifeline-entry { display:block; min-height:100vh; overflow-x:hidden; background:#061b24; color:#fff; font-family:'DM Sans',sans-serif; perspective:1200px; }
+        .lifeline-entry::before { display:none; }
+        .entry-stage { position:relative; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(360px,.72fr); gap:clamp(32px,7vw,110px); align-items:center; min-height:100vh; max-width:1440px; margin:auto; padding:56px clamp(24px,6vw,96px) 100px; isolation:isolate; overflow:hidden; }
+        .entry-stage::before,.entry-stage::after { content:''; position:absolute; z-index:-4; border-radius:50%; pointer-events:none; }
+        .entry-stage::before { width:720px;height:720px;top:-340px;left:-250px;background:radial-gradient(circle,rgba(204,37,61,.28),transparent 67%); }
+        .entry-stage::after { width:620px;height:620px;right:-270px;bottom:-300px;background:radial-gradient(circle,rgba(67,153,177,.18),transparent 68%); }
+        .cursor-spotlight { position:fixed;z-index:-3;left:0;top:0;width:520px;height:520px;margin:-260px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,76,99,.13),rgba(255,76,99,.045) 28%,transparent 68%);filter:blur(4px); }
+        .cursor-glow { position:fixed;z-index:30;left:-8px;top:-8px;width:16px;height:16px;margin:-8px;border-radius:50%;pointer-events:none;background:rgba(255,111,129,.85);box-shadow:0 0 18px rgba(255,72,96,.8),0 0 45px rgba(255,42,71,.28);mix-blend-mode:screen;opacity:.8; }
+        .cursor-trail-layer { position:fixed;inset:0;z-index:29;pointer-events:none;overflow:hidden; }
+        .cursor-trail { position:absolute;width:6px;height:6px;margin:-3px;border-radius:50%;background:#e73751;box-shadow:0 0 14px rgba(231,55,81,.75);animation:trailFade .55s ease-out forwards; }
+        .entry-particles { position:absolute;inset:0;z-index:-2;pointer-events:none;overflow:hidden; }
+        .entry-particle { position:absolute;left:var(--px);top:var(--py);width:var(--s);height:var(--s);border-radius:50%;background:rgba(255,135,151,.65);box-shadow:0 0 12px rgba(255,65,91,.35);animation:particleFloat var(--d) ease-in-out var(--delay) infinite alternate; }
+        .entry-hero,.login-card { position:relative;z-index:1; }
+        .entry-hero { max-width:720px;animation:entryRise .75s cubic-bezier(.22,1,.36,1) both; }
+        .entry-brand { display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:1.05rem;font-weight:800;letter-spacing:-.02em; }
+        .entry-brand-mark { display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#c92b3e;box-shadow:0 10px 30px rgba(201,43,62,.28); }
+        .entry-kicker { margin:0 0 18px;color:#f4a4af;font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase; }
+        .entry-hero h1 { max-width:10ch;margin:0;color:#fff;font-size:clamp(3.2rem,6.3vw,6.1rem);line-height:.94;letter-spacing:-.07em; }
+        .entry-hero h1 em { color:#ffb3bd;font-style:normal; }
+        .entry-copy { max-width:52ch;margin:25px 0 28px;color:#c5d7dd;font-size:1.03rem;line-height:1.7; }
+        .entry-path { display:flex;flex-wrap:wrap;gap:9px;color:#e6f0f3;font-size:.8rem;font-weight:700; }
+        .entry-path span { display:inline-flex;align-items:center;gap:9px; }
+        .entry-path span:not(:last-child)::after { content:'→';color:#7598a4; }
+        .blood-visual { position:absolute;width:clamp(300px,32vw,500px);height:clamp(300px,32vw,500px);right:clamp(29%,35vw,38%);top:50%;transform:translate3d(var(--visual-x,0),var(--visual-y,0),0) translate(50%,-50%);pointer-events:none;z-index:-1;opacity:.92;transition:transform .15s ease-out; }
+        .blood-orbit { position:absolute;inset:7%;border:1px solid rgba(255,165,177,.22);border-radius:50%;transform-origin:center;will-change:transform; }
+        .blood-orbit::before,.blood-orbit::after { content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#f56a7d;box-shadow:0 0 20px rgba(245,106,125,.7); }
+        .blood-orbit::before { left:12%;top:11%; }.blood-orbit::after { right:8%;bottom:14%;width:8px;height:8px; }
+        .blood-orbit-2 { position:absolute;inset:17%;border:1px dashed rgba(255,255,255,.12);border-radius:50%;transform-origin:center;will-change:transform; }
+        .blood-ring { position:absolute;width:54%;aspect-ratio:1;left:50%;top:50%;border-radius:50%;border:1px solid rgba(255,106,126,.22);transform:translate(-50%,-50%) rotateX(72deg);box-shadow:0 0 45px rgba(214,31,60,.08); }
+        .blood-drop { position:absolute;width:31%;aspect-ratio:.78;left:50%;top:50%;transform:translate3d(calc(-50% + var(--drop-x,0px)),calc(-56% + var(--drop-y,0px)),0) rotate(45deg) rotateY(var(--drop-tilt,0deg)) scale(var(--drop-scale,1));border-radius:62% 38% 63% 37% / 48% 45% 55% 52%;background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.55) 0 3%,transparent 10%),radial-gradient(circle at 60% 38%,rgba(255,117,136,.45),transparent 30%),linear-gradient(145deg,#ff526a 0%,#d61f3c 42%,#8e1027 100%);box-shadow:inset -18px -20px 35px rgba(80,0,13,.28),inset 10px 8px 20px rgba(255,255,255,.11),0 30px 80px rgba(185,21,48,.35),0 0 60px rgba(215,35,61,.16);animation:bloodFloat 5s ease-in-out infinite;will-change:transform; }
+        .blood-drop::after { content:'';position:absolute;inset:18% 25% 48% 15%;border-radius:50%;background:rgba(255,255,255,.18);filter:blur(7px);transform:rotate(-45deg); }
+        .blood-cell { position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9aa7 0 8%,#df3b55 25%,#8d1228 68%,#570817 100%);box-shadow:0 0 18px rgba(220,48,76,.35);animation:cellDrift 7s ease-in-out infinite;transform:translate3d(var(--cell-x,0),var(--cell-y,0),0);transition:transform .18s ease-out; }
+        .blood-cell:nth-child(5){left:15%;top:42%;animation-delay:-1s;scale:.65}.blood-cell:nth-child(6){right:16%;top:29%;animation-delay:-3s;scale:.8}.blood-cell:nth-child(7){right:19%;bottom:22%;animation-delay:-5s;scale:.55}
+        .login-card { max-width:440px;justify-self:end;border:1px solid rgba(255,255,255,.18);border-radius:20px;background:rgba(255,255,255,.97);box-shadow:0 28px 90px rgba(1,20,28,.42);overflow:hidden;transform:perspective(1100px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg)) translateY(var(--card-lift,0));transform-style:preserve-3d;will-change:transform;transition:box-shadow .25s ease,border-color .25s ease;animation:entryRise .8s .12s cubic-bezier(.22,1,.36,1) both; }
+        .login-card.role-selected { border-color:color-mix(in srgb,var(--role-accent) 42%,white);box-shadow:0 30px 100px rgba(1,20,28,.45),0 0 0 1px color-mix(in srgb,var(--role-accent) 18%,transparent); }
+        .login-right { padding:36px;display:block; }.login-intro{margin-bottom:24px}.login-intro h2{margin:0;color:#173a49;font-size:1.5rem;letter-spacing:-.035em}.login-intro p{margin:7px 0 0;color:#66808b;font-size:.9rem;line-height:1.5}.login-form{width:100%}.login-form .form-group{margin-bottom:16px;position:relative}.login-form label{display:block;color:#38515b;font-size:.84rem;font-weight:700;transition:transform .22s ease,color .22s ease}.login-form .form-group.is-focused label,.login-form .form-group.has-value label{color:var(--role-accent);transform:translateY(-2px)}
+        .login-form input,.login-form select{width:100%;min-height:46px;border:1px solid #dbe5e8;border-radius:9px;color:#173a49;box-sizing:border-box;background:#fff;transition:border-color .25s ease,box-shadow .25s ease,background .25s ease,transform .2s ease}.login-form input:focus,.login-form select:focus{border-color:var(--role-accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--role-accent) 14%,transparent),inset 0 0 18px rgba(255,87,107,.035);outline:none;transform:translateY(-1px)}
+        .login-form .form-group::after{content:'';position:absolute;left:4%;right:4%;bottom:0;height:2px;border-radius:99px;background:linear-gradient(90deg,transparent,var(--role-accent),transparent);transform:scaleX(0);opacity:0;transition:transform .35s ease,opacity .35s ease}.login-form .form-group.is-focused::after{transform:scaleX(1);opacity:.7}
+        .form-error{color:#c52b3d;font-size:.82rem;margin-top:4px}.btn-login{position:relative;isolation:isolate;width:100%;min-height:47px;border:0;border-radius:9px;background:#c92b3e;color:#fff;font-size:.9rem;font-weight:800;letter-spacing:.04em;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;transform:translate3d(var(--button-x,0),var(--button-y,0),0);transition:transform .18s ease,background .18s ease,box-shadow .18s ease}.btn-login::before{content:'';position:absolute;inset:-2px;z-index:-1;background:radial-gradient(circle at calc(50% + var(--button-x,0)) 50%,rgba(255,255,255,.25),transparent 28%);opacity:0;transition:opacity .2s ease}.btn-login::after{content:'→';font-size:1.1rem;opacity:.75;transform:translateX(-4px);transition:transform .25s ease,opacity .25s ease}.btn-login:hover{background:#a92335;box-shadow:0 12px 28px rgba(169,35,53,.28)}.btn-login:hover::before{opacity:1}.btn-login:hover::after{transform:translateX(3px);opacity:1}.btn-login:active{transform:translate3d(var(--button-x,0),var(--button-y,0),0) scale(.985)}.btn-login:disabled{opacity:.72;cursor:default}.spinner-small{width:17px;height:17px;margin-left:4px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}.show-hide{position:absolute;right:12px;top:35px;cursor:pointer;font-size:.78rem;font-weight:700;color:#607984;transition:color .2s ease,transform .2s ease}.show-hide:hover{color:var(--role-accent);transform:translateY(-50%) scale(1.04)}
+        .entry-reassurance{display:flex;align-items:center;gap:8px;margin:18px 0 0;color:#66808b;font-size:.75rem}.entry-reassurance i{color:#218358}.entry-story{position:relative;z-index:1;max-width:1440px;margin:-38px auto 0;padding:0 clamp(24px,6vw,96px) 54px}.entry-story-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.12)}.entry-story-item{min-height:118px;padding:23px;background:rgba(10,38,49,.66);color:#d8e6ea;transition:transform .25s ease,background .25s ease}.entry-story-item:hover{transform:translateY(-4px);background:rgba(16,52,64,.78)}.entry-story-item i{color:#ffabb7}.entry-story-item strong{display:block;margin:13px 0 5px;color:#fff;font-size:.88rem}.entry-story-item span{font-size:.78rem;line-height:1.5;color:#b9cdd3}
+        .login-transition::after{content:'';position:fixed;z-index:100;width:80px;height:80px;left:var(--mx,50vw);top:var(--my,50vh);margin:-40px;border-radius:50%;background:#c92b3e;animation:loginWipe .75s cubic-bezier(.77,0,.18,1) forwards;pointer-events:none}.login-transition .entry-hero,.login-transition .login-card,.login-transition .entry-story{animation:exitFade .4s ease forwards}
+        @keyframes entryRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes bloodFloat{0%,100%{margin-top:0}50%{margin-top:-12px}}@keyframes cellDrift{0%,100%{margin-top:0}50%{margin-top:-14px}}@keyframes trailFade{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(.15)}}@keyframes particleFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(18px,-14px,0)}}@keyframes loginWipe{from{width:80px;height:80px;margin:-40px;opacity:.95}to{width:260vmax;height:260vmax;margin:-130vmax;opacity:1}}@keyframes exitFade{to{opacity:0;transform:translateY(8px) scale(.985)}}@keyframes spin{to{transform:rotate(360deg)}}
+        @media(max-width:1050px){.entry-stage{grid-template-columns:minmax(0,1fr) minmax(340px,.65fr);gap:34px}.blood-visual{right:48%;opacity:.42}}@media(max-width:800px){.entry-stage{grid-template-columns:1fr;gap:34px;min-height:0;padding-top:44px;padding-bottom:70px}.entry-hero{max-width:600px}.entry-hero h1{max-width:13ch;font-size:clamp(2.8rem,12vw,4.2rem)}.blood-visual{width:360px;height:360px;right:8%;top:28%;opacity:.2}.login-card{width:100%;max-width:500px;justify-self:stretch;transform:none!important}.login-right{padding:28px 22px}.entry-story{margin-top:0}.entry-story-grid{grid-template-columns:1fr}.cursor-glow,.cursor-spotlight,.cursor-trail-layer{display:none}}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}.cursor-glow,.cursor-spotlight,.cursor-trail-layer,.entry-particles{display:none}.login-card{transform:none!important}}
     </style>
 </head>
-<body class="login-page">
-    <main class="login-shell">
-        <section class="login-story" aria-label="Life Link introduction">
-            <div class="login-brand"><span class="login-mark">🩸</span> Life Link</div>
-            <div class="login-hero">
-                <div class="login-eyebrow"><i class="fas fa-wave-square"></i> Blood operations, connected</div>
-                <h1>Every unit has a <span>story.</span></h1>
-                <p>Life Link brings donor records, health screening, inventory, hospital requests and fulfillment into one operational workspace.</p>
-                <div class="login-pills"><span class="login-pill">Donor registry</span><span class="login-pill">Live inventory</span><span class="login-pill">Hospital requests</span></div>
-            </div>
-            <div class="login-story-footer">SECURE OPERATIONS PLATFORM · LIFE LINK</div>
-        </section>
-
-        <section class="login-form-panel">
-            <div class="login-form-wrap">
-                <h2>Welcome back</h2>
-                <p class="intro">Sign in to continue to your Life Link workspace.</p>
-                <form id="loginForm" class="login-form" onsubmit="handleLogin(event)">
-                    <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" autocomplete="email" required><div class="form-error" id="errorEmail"></div></div>
-                    <div class="form-group"><label for="password">Password</label><div class="login-field"><input type="password" id="password" name="password" autocomplete="current-password" required><span class="show-hide" onclick="togglePassword()">Show</span></div><div class="form-error" id="errorPassword"></div></div>
-                    <div class="form-group"><label for="role">Workspace</label><select id="role" name="role" required><option value="">Select your role</option><option value="Admin">Admin</option><option value="Staff">Staff</option><option value="Hospital">Hospital</option></select><div class="form-error" id="errorRole"></div></div>
-                    <button type="submit" class="btn-login" id="loginBtn">Sign in</button>
-                    <div class="login-meta"><span>Protected by your session</span><a href="#" onclick="return false">Need help?</a></div>
-                    <div class="form-error" id="errorGeneral"></div>
-                </form>
-            </div>
-        </section>
-    </main>
-    <script>
-        function togglePassword(){const pw=document.getElementById('password');const toggle=document.querySelector('.show-hide');pw.type=pw.type==='password'?'text':'password';toggle.textContent=pw.type==='password'?'Show':'Hide';}
-        async function handleLogin(e){e.preventDefault();clearErrors();const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,role=document.getElementById('role').value;if(!email||!password||!role){if(!email)showError('errorEmail','Email is required');if(!password)showError('errorPassword','Password is required');if(!role)showError('errorRole','Choose a workspace');return;}const btn=document.getElementById('loginBtn');btn.disabled=true;const old=btn.textContent;btn.textContent='Signing in…';try{const res=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,role})});const data=await res.json();if(!res.ok){showError('errorGeneral',data.error||'Login failed');btn.disabled=false;btn.textContent=old;return;}window.location.href='/'+role.toLowerCase()+'-dashboard';}catch(err){showError('errorGeneral','Unable to reach the server');btn.disabled=false;btn.textContent=old;}}
-        function clearErrors(){['errorEmail','errorPassword','errorRole','errorGeneral'].forEach(id=>document.getElementById(id).textContent='');}
-        function showError(id,msg){document.getElementById(id).textContent=msg;}
-    </script>
-</body>
-</html>
+<body class="lifeline-entry">
+<main class="entry-stage">
+    <div class="blood-visual" aria-hidden="true"><div class="blood-orbit"></div><div class="blood-orbit-2"></div><div class="blood-ring"></div><div class="blood-drop"></div><span class="blood-cell"></span><span class="blood-cell"></span><span class="blood-cell"></span></div>
+    <section class="entry-hero" aria-label="Life Link introduction">
+        <div class="entry-brand"><span class="entry-brand-mark"><i class="fas fa-heart-pulse" aria-hidden="true"></i></span> Life Link</div>
+        <p class="entry-kicker">Blood bank operations platform</p><h1>Every unit has a <em>route to life.</em></h1>
+        <p class="entry-copy">A calm, connected workspace for the people who register donors, safeguard inventory, and answer urgent hospital requests.</p>
+        <div class="entry-path" aria-label="Life Link workflow"><span>Donors</span><span>Screening</span><span>Inventory</span><span>Requests</span></div>
+    </section>
+    <div class="login-card"><div class="login-right">
+        <div class="login-intro"><h2>Welcome back</h2><p>Sign in to continue to your operational workspace.</p></div>
+        <form id="loginForm" class="login-form" onsubmit="handleLogin(event)">
+            <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" required autocomplete="email"><div class="form-error" id="errorEmail"></div></div>
+            <div class="form-group"><label for="password">Password</label><input type="password" id="password" name="password" required autocomplete="current-password"><span class="show-hide" onclick="togglePassword()">Show</span><div class="form-error" id="errorPassword"></div></div>
+            <div class="form-group"><label for="role">Role</label><select id="role" name="role" required><option value="">Select Role</option><option value="Admin">Admin</option><option value="Staff">Staff</option><option value="Hospital">Hospital</option></select><div class="form-error" id="errorRole"></div></div>
+            <button type="submit" class="btn-login" id="loginBtn"><span class="login-label">LOGIN</span></button>
+            <div style="margin-top:.55rem;text-align:right"><a href="#" style="font-size:.82rem;color:#557783">Forgot Password?</a></div><div class="form-error" id="errorGeneral"></div>
+        </form>
+        <p class="entry-reassurance"><i class="fas fa-shield-heart" aria-hidden="true"></i> Secure, role-based access for every team.</p>
+    </div></div>
+</main>
+<section class="entry-story" aria-label="What Life Link supports"><div class="entry-story-grid">
+    <div class="entry-story-item"><i class="fas fa-droplet" aria-hidden="true"></i><strong>Visible inventory</strong><span>Keep supply status close to the decisions that need it.</span></div>
+    <div class="entry-story-item"><i class="fas fa-hospital" aria-hidden="true"></i><strong>Responsive requests</strong><span>Give urgent hospital needs a clear operational path.</span></div>
+    <div class="entry-story-item"><i class="fas fa-users" aria-hidden="true"></i><strong>Connected care</strong><span>Track the workflow from donor registration through fulfillment.</span></div>
+</div></section>
+<script>
+function togglePassword(){const pw=document.getElementById('password'),toggle=document.querySelector('.show-hide');if(pw.type==='password'){pw.type='text';toggle.textContent='Hide'}else{pw.type='password';toggle.textContent='Show'}}
+async function handleLogin(e){e.preventDefault();clearErrors();const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,role=document.getElementById('role').value;if(!email||!password||!role){if(!email)showError('errorEmail','Required');if(!password)showError('errorPassword','Required');if(!role)showError('errorRole','Required');return}const btn=document.getElementById('loginBtn'),label=btn.querySelector('.login-label');btn.disabled=true;label.textContent='CONNECTING';const spinner=document.createElement('div');spinner.className='spinner-small';btn.appendChild(spinner);try{const res=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,role})});const data=await res.json();if(!res.ok){showError('errorGeneral',data.error||'Login failed');btn.disabled=false;label.textContent='LOGIN';spinner.remove();return}if(typeof window.lifeLinkLoginTransition==='function')window.lifeLinkLoginTransition();const dest=role.toLowerCase()+'-dashboard';setTimeout(()=>{window.location.href='/'+dest},520)}catch(err){showError('errorGeneral','Network error');btn.disabled=false;label.textContent='LOGIN';spinner.remove()}}
+function clearErrors(){['errorEmail','errorPassword','errorRole','errorGeneral'].forEach(id=>document.getElementById(id).textContent='')}function showError(id,msg){document.getElementById(id).textContent=msg}
+</script>
+<script src="/static/js/login-motion.js" defer></script>
+</body></html>

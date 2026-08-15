@@ -64,10 +64,8 @@ CREATE TABLE IF NOT EXISTS donation (
 );
 
 -- Table: BLOOD_STOCK
--- now tracks component_type and expiry_date so that requests can be
--- fulfilled according to component and shelf‑life.  Each donation adds a
--- row; quantities are decremented when items are issued.  Aggregation is
--- performed by queries when displaying stock.
+-- Stock is updated by the Flask donation workflow, not by a database trigger.
+-- Keeping one source of truth prevents donation quantities from being added twice.
 CREATE TABLE IF NOT EXISTS blood_stock (
     stock_id INT PRIMARY KEY AUTO_INCREMENT,
     bank_id INT NOT NULL,
@@ -90,6 +88,18 @@ CREATE TABLE IF NOT EXISTS blood_request (
     status VARCHAR(20) DEFAULT 'Pending',
     request_date DATE NOT NULL,
     FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id)
+);
+
+-- Records the precise stock rows used when fulfilling a request so an Admin
+-- reset from Fulfilled back to Pending can restore those units correctly.
+CREATE TABLE IF NOT EXISTS blood_request_stock_allocation (
+    allocation_id INT PRIMARY KEY AUTO_INCREMENT,
+    request_id INT NOT NULL,
+    stock_id INT NOT NULL,
+    quantity_units INT NOT NULL,
+    FOREIGN KEY (request_id) REFERENCES blood_request(request_id),
+    FOREIGN KEY (stock_id) REFERENCES blood_stock(stock_id),
+    UNIQUE KEY uq_request_stock_allocation (request_id, stock_id)
 );
 
 -- Insert sample blood banks
@@ -143,41 +153,8 @@ INSERT IGNORE INTO blood_stock (bank_id, blood_group, quantity_units, status) VA
 (2, 'O+', 44, 'Available'),
 (2, 'O-', 14, 'Available');
 
--- Create trigger to update stock after donation (optional)
--- Note: when the schema includes component_type and expiry_date, the
--- UNIQUE key should be (bank_id,blood_group,component_type,expiry_date)
--- so that each donation creates a separate entry.  You may later aggregate
--- or purge expired rows as needed.
---     If you remove the trigger you must restore manual updates in the
---     POST /donations handler or the stock will not change.  Do not update
---     stock in both places or quantities will double.
-DELIMITER //
-CREATE TRIGGER IF NOT EXISTS after_donation_insert
-AFTER INSERT ON donation
-FOR EACH ROW
-BEGIN
-    DECLARE comp VARCHAR(50);
-    DECLARE expd DATE;
-    SET comp = NEW.component_type;
-    SET expd = NEW.expiry_date;
-
-    INSERT INTO blood_stock (bank_id, blood_group, component_type, expiry_date, quantity_units, status)
-    SELECT 
-        NEW.bank_id,
-        d.blood_group,
-        comp,
-        expd,
-        NEW.quantity_units,
-        'Available'
-    FROM donor d
-    WHERE d.donor_id = NEW.donor_id
-    ON DUPLICATE KEY UPDATE 
-        quantity_units = quantity_units + NEW.quantity_units,
-        status = CASE 
-            WHEN quantity_units + NEW.quantity_units < 10 THEN 'Low'
-            ELSE 'Available'
-        END;
-END//
-DELIMITER ;
+-- IMPORTANT: Do not add an AFTER INSERT donation trigger here.
+-- The Flask /donations endpoint already updates blood_stock explicitly.
+-- Having both mechanisms active doubles every donation quantity.
 
 SELECT 'Database schema created/updated successfully!' as Status;

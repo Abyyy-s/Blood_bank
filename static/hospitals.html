@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospitals - Blood Bank Management System</title>
+    <title>Hospitals · Life Link</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/hospitals-workspace.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="hospitals-workspace-page">
     <script src="/static/js/auth.js?v=2"></script>
     <script>checkAuth(['Admin']);</script>
+
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">🩸</div>
@@ -30,84 +32,78 @@
             </ul>
         </nav>
     </aside>
+
     <div class="main-content-with-sidebar">
         <nav class="sidebar-top-nav">
-            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+            <div style="display:flex;align-items:center;gap:15px;flex:1;">
                 <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
+                <div id="userGreeting" class="user-greeting" style="position:relative;transform:none;right:auto;top:auto;"></div>
             </div>
         </nav>
-        <!-- Main Content -->
-    <div class="container">
-        <script src="/static/js/sidebar.js"></script>
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">Hospitals</h1>
-            <p class="page-subtitle">Manage hospitals registered in the system</p>
-        </div>
 
-        <!-- Action Bar -->
-        <div class="card" style="margin-bottom: 2rem;">
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="btn btn-primary" onclick="openAddModal()">
-                    <span>➕</span>
-                    <span>Add Hospital</span>
-                </button>
-            </div>
-        </div>
+        <main class="container hospitals-page-content">
+            <script src="/static/js/app-shell.js?v=1"></script>
+            <script src="/static/js/sidebar.js"></script>
 
-        <!-- Hospitals Table -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">All Hospitals</h2>
-                <span class="card-icon">🏥</span>
-            </div>
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Hospital ID</th>
-                            <th>Hospital Name</th>
-                            <th>Location</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="hospitalsTableBody">
-                        <tr>
-                            <td colspan="4" style="text-align: center;">
-                                <div class="spinner"></div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <section class="hospitals-hero reveal-on-scroll">
+                <div>
+                    <span class="hospitals-eyebrow">NETWORK / CARE PARTNERS</span>
+                    <h1>Hospital network</h1>
+                    <p>Manage the hospitals connected to Life Link and keep operational contacts easy to reach.</p>
+                </div>
+                <button class="hospital-primary-action" onclick="openAddModal()"><i class="fas fa-plus"></i> Add hospital</button>
+            </section>
+
+            <section class="hospital-toolbar reveal-on-scroll">
+                <div class="hospital-search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input id="hospitalSearch" type="search" placeholder="Search hospitals or locations…" autocomplete="off" aria-label="Search hospitals">
+                    <kbd>/</kbd>
+                </div>
+                <div class="hospital-count"><strong id="hospitalCount">0</strong> registered</div>
+            </section>
+
+            <section class="hospital-network-panel reveal-on-scroll">
+                <div class="network-panel-heading">
+                    <div>
+                        <span class="section-kicker">CONNECTED FACILITIES</span>
+                        <h2>Care network</h2>
+                    </div>
+                    <span class="network-status"><span></span> Operational directory</span>
+                </div>
+                <div id="hospitalsGrid" class="hospitals-grid" aria-live="polite">
+                    <div class="hospital-loading"><span class="spinner"></span> Loading hospitals…</div>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <!-- Add Hospital Modal -->
     <div id="addModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content hospital-modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Add New Hospital</h2>
-                <button class="modal-close" onclick="closeAddModal()">&times;</button>
+                <div>
+                    <span class="section-kicker">NETWORK REGISTRATION</span>
+                    <h2 class="modal-title">Add hospital</h2>
+                </div>
+                <button class="modal-close" onclick="closeAddModal()" aria-label="Close">&times;</button>
             </div>
             <form id="addHospitalForm" onsubmit="addHospital(event)">
                 <div class="form-group">
-                    <label class="form-label">Hospital Name *</label>
-                    <input type="text" name="hospital_name" class="form-input" placeholder="e.g. Government Medical College Hospital" required>
+                    <label class="form-label" for="hospitalName">Hospital name *</label>
+                    <input id="hospitalName" type="text" name="hospital_name" class="form-input" placeholder="e.g. Government Medical College Hospital" required>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Location</label>
-                    <input type="text" name="location" class="form-input" placeholder="e.g. Thiruvananthapuram, Kerala">
+                    <label class="form-label" for="hospitalLocation">Location</label>
+                    <input id="hospitalLocation" type="text" name="location" class="form-input" placeholder="e.g. Thiruvananthapuram, Kerala">
                 </div>
-                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                <div class="hospital-modal-actions">
                     <button type="button" class="btn btn-outline" onclick="closeAddModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Hospital</button>
+                    <button type="submit" class="btn btn-primary">Add hospital</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="/static/js/hospitals.js?v=2"></script>
+    <script src="/static/js/hospitals.js?v=3"></script>
 </body>
 </html>

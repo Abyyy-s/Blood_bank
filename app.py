@@ -64,6 +64,17 @@ def init_db():
         cur.execute("ALTER TABLE blood_stock ADD CONSTRAINT blood_stock_ibfk_1 FOREIGN KEY (bank_id) REFERENCES blood_bank(bank_id)")
     except Exception:
         pass
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS blood_request_stock_allocation (
+            allocation_id INT PRIMARY KEY AUTO_INCREMENT,
+            request_id INT NOT NULL,
+            stock_id INT NOT NULL,
+            quantity_units INT NOT NULL,
+            FOREIGN KEY (request_id) REFERENCES blood_request(request_id),
+            FOREIGN KEY (stock_id) REFERENCES blood_stock(stock_id),
+            UNIQUE KEY uq_request_stock_allocation (request_id, stock_id)
+        )
+    """)
     mysql.connection.commit()
     cur.execute("""
         CREATE TABLE IF NOT EXISTS notification (
@@ -791,8 +802,12 @@ def update_request(request_id):
                 WHERE blood_group=%s AND component_type=%s AND quantity_units>0
                 ORDER BY quantity_units ASC
             """, (requested_group, requested_component))
+            stock_rows = cur2.fetchall()
+            # Keep the exact rows used for this fulfillment.  A later reset to
+            # Pending must return the units to the same blood-bank stock rows.
+            cur2.execute("DELETE FROM blood_request_stock_allocation WHERE request_id=%s", (request_id,))
             remaining = qty_needed
-            for row in cur2.fetchall():
+            for row in stock_rows:
                 if remaining <= 0:
                     break
                 take = min(row['quantity_units'], remaining)
@@ -807,6 +822,10 @@ def update_request(request_id):
                         END
                     WHERE stock_id = %s
                 """, (new_qty, new_qty, new_qty, row['stock_id']))
+                cur2.execute("""
+                    INSERT INTO blood_request_stock_allocation (request_id, stock_id, quantity_units)
+                    VALUES (%s, %s, %s)
+                """, (request_id, row['stock_id'], take))
                 remaining -= take
             cur2.close()
             cur.execute("UPDATE blood_request SET status='Fulfilled' WHERE request_id=%s", (request_id,))
@@ -834,10 +853,52 @@ def update_request(request_id):
             if user['role'] != 'Admin':
                 cur.close()
                 return jsonify({"error": "Only Admins can reset to Pending"}), 403
+            if req['status'] == 'Fulfilled':
+                cur.execute("""
+                    SELECT stock_id, quantity_units
+                    FROM blood_request_stock_allocation
+                    WHERE request_id=%s
+                """, (request_id,))
+                allocations = cur.fetchall()
+
+                # Requests fulfilled before allocation tracking existed have no
+                # row-level history.  Restore their total to a matching stock
+                # row so their inventory is not permanently lost.
+                if not allocations:
+                    cur.execute("""
+                        SELECT stock_id FROM blood_stock
+                        WHERE blood_group=%s AND component_type=%s
+                        ORDER BY stock_id ASC LIMIT 1
+                    """, (req['blood_group'], req['component_type']))
+                    fallback_stock = cur.fetchone()
+                    if not fallback_stock:
+                        cur.close()
+                        return jsonify({"error": "Unable to restore stock: matching stock record not found"}), 400
+                    allocations = [{
+                        'stock_id': fallback_stock['stock_id'],
+                        'quantity_units': req['quantity_units']
+                    }]
+
+                for allocation in allocations:
+                    cur.execute("""
+                        UPDATE blood_stock
+                        SET quantity_units = quantity_units + %s,
+                            status = CASE
+                                WHEN quantity_units + %s = 0 THEN 'Out of Stock'
+                                WHEN quantity_units + %s <= 5 THEN 'Low'
+                                ELSE 'Available'
+                            END
+                        WHERE stock_id = %s
+                    """, (allocation['quantity_units'], allocation['quantity_units'],
+                          allocation['quantity_units'], allocation['stock_id']))
+                cur.execute("DELETE FROM blood_request_stock_allocation WHERE request_id=%s", (request_id,))
             cur.execute("UPDATE blood_request SET status='Pending' WHERE request_id=%s", (request_id,))
             mysql.connection.commit()
             cur.close()
-            return jsonify({"message": "Request reset to Pending"})
+            message = "Request reset to Pending"
+            if req['status'] == 'Fulfilled':
+                message += f" and {req['quantity_units']} unit(s) restored to stock"
+            return jsonify({"message": message})
     except Exception as e:
         return jsonify({"error": str(e), "trace": traceback.format_exc()}), 500
 

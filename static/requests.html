@@ -4,209 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blood Request Management System">
-    <title>Blood Requests - Blood Bank Management System</title>
-    <link rel="stylesheet" href="/static/css/style.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
+    <title>Requests — Life Link</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/operational-pages.css?v=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
 <body>
     <script src="/static/js/auth.js?v=2"></script>
     <script>checkAuth(['Admin','Staff','Hospital']);</script>
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">🩸</div>
-            <h2 class="sidebar-title">Life Link</h2>
-        </div>
-        <nav>
-            <ul class="sidebar-nav">
-                <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Health Screening</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-box"></i></span><span>Blood Stock</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span><span>Requests</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital-user"></i></span><span>Hospitals</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li>
-                <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a></li>
-            </ul>
-        </nav>
+        <div class="sidebar-header"><div class="sidebar-logo">🩸</div><h2 class="sidebar-title">Life Link</h2></div>
+        <nav><ul class="sidebar-nav">
+            <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-heart-pulse"></i></span><span>Health Screening</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-droplet"></i></span><span>Blood Stock</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-clipboard-list"></i></span><span>Requests</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Hospitals</span></a></li>
+            <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li>
+            <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-arrow-right-from-bracket"></i></span><span>Logout</span></a></li>
+        </ul></nav>
     </aside>
     <div class="main-content-with-sidebar">
-        <nav class="sidebar-top-nav">
-            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
-                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
-            </div>
-        </nav>
-        <!-- Main Content -->
-    <div class="container">
-        <script src="/static/js/sidebar.js"></script>
-        <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">Blood Requests</h1>
-            <p class="page-subtitle">Manage hospital blood requests and fulfillment</p>
-        </div>
-
-        <!-- Action Bar -->
-        <div class="card" style="margin-bottom: 2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <div style="display: flex; gap: 1rem; flex: 1; flex-wrap: wrap;">
-                    <select id="filterStatus" class="form-select" style="min-width: 150px;">
-                        <option value="">All Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Fulfilled">Fulfilled</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                    <select id="filterBloodGroup" class="form-select" style="min-width: 150px;">
-                        <option value="">All Blood Groups</option>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                    </select>
-                    <button class="btn btn-outline" onclick="loadRequests()" style="min-width: 120px;">
-                        <span>🔄</span>
-                        <span>Refresh</span>
-                    </button>
+        <nav class="sidebar-top-nav"><div style="display:flex;align-items:center;gap:15px;flex:1"><button class="sidebar-toggle" onclick="toggleSidebar()">☰</button><div id="userGreeting" class="user-greeting" style="position:relative;transform:none;right:auto;top:auto"></div></div></nav>
+        <div class="container app-workspace">
+            <script src="/static/js/app-shell.js?v=1"></script>
+            <script src="/static/js/sidebar.js"></script>
+            <section class="op-shell">
+                <header class="op-hero">
+                    <div><p class="op-kicker"><i class="fas fa-heart-pulse"></i> Request triage</p><h1 class="op-title">Demand needs a response.</h1><p class="op-description">See urgent hospital requests first, understand what can be fulfilled, and move each request through its lifecycle without losing the operational context.</p></div>
+                    <div class="op-hero-actions"><button class="op-btn" type="button" onclick="loadRequests()"><i class="fas fa-rotate"></i> Refresh</button><button class="op-btn op-btn-primary" type="button" onclick="openCreateModal()"><i class="fas fa-plus"></i> New request</button></div>
+                </header>
+                <div class="op-metrics" id="requestSummary" aria-live="polite">
+                    <article class="op-metric" style="--metric-accent:#c51f3a"><div class="op-metric-label">Open requests</div><div class="op-metric-value">—</div><div class="op-metric-note">Awaiting action</div></article>
+                    <article class="op-metric" style="--metric-accent:#941329"><div class="op-metric-label">Critical</div><div class="op-metric-value">—</div><div class="op-metric-note">Highest priority</div></article>
+                    <article class="op-metric" style="--metric-accent:#287a55"><div class="op-metric-label">Fulfilled</div><div class="op-metric-value">—</div><div class="op-metric-note">Completed requests</div></article>
+                    <article class="op-metric" style="--metric-accent:#b86b12"><div class="op-metric-label">Units requested</div><div class="op-metric-value">—</div><div class="op-metric-note">Across visible requests</div></article>
                 </div>
-                <button class="btn btn-primary" onclick="openCreateModal()">
-                    <span>➕</span>
-                    <span>New Request</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Requests Table -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">All Requests</h2>
-                <span class="card-icon">📋</span>
-            </div>
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Hospital</th>
-                            <th>Location</th>
-                            <th>Blood Group</th>
-                            <th>Component</th>
-                            <th>Quantity</th>
-                            <th>Urgency</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="requestsTableBody">
-                        <tr>
-                            <td colspan="10" style="text-align: center;">
-                                <div class="spinner"></div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <div class="op-layout">
+                    <section class="op-panel">
+                        <div class="op-panel-head"><div><h2 class="op-panel-title">Request queue</h2><p class="op-panel-subtitle">Sort and filter the operational queue. Critical demand stays visually prominent.</p></div><span class="op-badge op-badge-danger"><i class="fas fa-bolt"></i> Triage</span></div>
+                        <div class="op-panel-body">
+                            <div class="op-filter-grid" style="margin-bottom:18px;grid-template-columns:1fr 1fr auto">
+                                <select id="filterStatus" class="form-select op-filter"><option value="">All Status</option><option value="Pending">Pending</option><option value="Approved">Approved</option><option value="Fulfilled">Fulfilled</option><option value="Rejected">Rejected</option></select>
+                                <select id="filterBloodGroup" class="form-select op-filter"><option value="">All Blood Groups</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="AB+">AB+</option><option value="AB-">AB-</option><option value="O+">O+</option><option value="O-">O-</option></select>
+                                <button class="op-btn" type="button" onclick="loadRequests()"><i class="fas fa-rotate"></i></button>
+                            </div>
+                            <div class="op-table-wrap">
+                                <table class="op-table"><thead><tr><th>Request</th><th>Hospital</th><th>Need</th><th>Qty</th><th>Urgency</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+                                <tbody id="requestsTableBody"><tr><td colspan="8"><div class="op-empty"><i class="fas fa-spinner fa-spin"></i>Loading requests…</div></td></tr></tbody></table>
+                            </div>
+                        </div>
+                    </section>
+                    <aside class="op-panel"><div class="op-panel-head"><div><h2 class="op-panel-title">Triage guide</h2><p class="op-panel-subtitle">What the queue is telling you</p></div></div><div class="op-panel-body"><div class="op-side-list"><div class="op-side-item"><div><strong>Critical</strong><span>Immediate attention</span></div><span class="op-badge op-badge-danger">Priority</span></div><div class="op-side-item"><div><strong>High</strong><span>Process next</span></div><span class="op-badge op-badge-warn">High</span></div><div class="op-side-item"><div><strong>Pending</strong><span>Needs a decision</span></div><span class="op-badge op-badge-blue">Open</span></div></div><div class="op-modal-note" style="margin-top:14px"><i class="fas fa-circle-info"></i> Fulfillment is still governed by the existing stock checks and allocation logic.</div></div></aside>
+                </div>
+            </section>
         </div>
     </div>
 
-    <!-- Create Request Modal -->
-    <div id="createModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Create Blood Request</h2>
-                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
-            </div>
-            <form id="createForm" onsubmit="createRequest(event)">
-                <div class="form-group">
-                    <label class="form-label">Hospital *</label>
-                    <select name="hospital_id" class="form-select">
-                        <option value="">Select Hospital</option>
-                    </select>
-                </div>
+    <div id="createModal" class="modal"><div class="modal-content"><div class="modal-header op-modal-header"><div><h2 class="modal-title">Create blood request</h2><p class="op-panel-subtitle">Submit a new hospital requirement.</p></div><button class="modal-close" onclick="closeCreateModal()">&times;</button></div><form id="createForm" onsubmit="createRequest(event)">
+        <div class="form-group"><label class="form-label">Hospital *</label><select name="hospital_id" class="form-select"><option value="">Select Hospital</option></select></div>
+        <div class="grid grid-2"><div class="form-group"><label class="form-label">Blood Group *</label><select name="blood_group" class="form-select"><option value="">Select Blood Group</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div><div class="form-group"><label class="form-label">Component Type *</label><select name="component_type" class="form-select"><option value="">Select Component</option><option>Whole Blood</option><option>Plasma</option><option>Platelets</option><option>RBC</option></select></div></div>
+        <div class="grid grid-2"><div class="form-group"><label class="form-label">Quantity (Units) *</label><input type="number" name="quantity_units" class="form-input" min="1"></div><div class="form-group"><label class="form-label">Urgency Level *</label><select name="urgency_level" class="form-select"><option value="">Select Urgency</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></div></div>
+        <div class="op-modal-note"><i class="fas fa-shield-heart"></i> The request will use the existing server-side validation and stock availability rules.</div>
+        <div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:2rem"><button type="button" class="btn btn-outline" onclick="closeCreateModal()">Cancel</button><button type="submit" class="btn btn-primary">Create Request</button></div>
+    </form></div></div>
 
-                <div class="grid grid-2">
-                    <div class="form-group">
-                        <label class="form-label">Blood Group *</label>
-                        <select name="blood_group" class="form-select">
-                            <option value="">Select Blood Group</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Component Type *</label>
-                        <select name="component_type" class="form-select">
-                            <option value="">Select Component</option>
-                            <option value="Whole Blood">Whole Blood</option>
-                            <option value="Plasma">Plasma</option>
-                            <option value="Platelets">Platelets</option>
-                            <option value="RBC">Red Blood Cells (RBC)</option>
-                        </select>
-                    </div>
-                </div>
+    <div id="updateModal" class="modal"><div class="modal-content"><div class="modal-header op-modal-header"><div><h2 class="modal-title">Update request</h2><p class="op-panel-subtitle">Move the request to its next valid state.</p></div><button class="modal-close" onclick="closeUpdateModal()">&times;</button></div><form id="updateForm" onsubmit="updateRequestStatus(event)"><input type="hidden" name="request_id" id="updateRequestId"><div class="form-group"><label class="form-label">Status *</label><select name="status" class="form-select" required><option value="Pending">Pending</option><option value="Fulfilled">Fulfilled</option><option value="Rejected">Rejected</option></select></div><div class="op-modal-note"><i class="fas fa-circle-info"></i> Returning a fulfilled request to pending uses the audited stock-allocation restoration logic.</div><div style="display:flex;gap:1rem;justify-content:flex-end;margin-top:2rem"><button type="button" class="btn btn-outline" onclick="closeUpdateModal()">Cancel</button><button type="submit" class="btn btn-primary">Update status</button></div></form></div></div>
 
-                <div class="grid grid-2">
-                    <div class="form-group">
-                        <label class="form-label">Quantity (Units) *</label>
-                        <input type="number" name="quantity_units" class="form-input" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Urgency Level *</label>
-                        <select name="urgency_level" class="form-select">
-                            <option value="">Select Urgency</option>
-                            <option value="Critical">Critical</option>
-                            <option value="High">High</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Low">Low</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-                    <button type="button" class="btn btn-outline" onclick="closeCreateModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Request</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Update Status Modal -->
-    <div id="updateModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Update Request Status</h2>
-                <button class="modal-close" onclick="closeUpdateModal()">&times;</button>
-            </div>
-            <form id="updateForm" onsubmit="updateRequestStatus(event)">
-                <input type="hidden" name="request_id" id="updateRequestId">
-                
-                <div class="form-group">
-                    <label class="form-label">Status *</label>
-                    <select name="status" class="form-select" required>
-                        <option value="Pending">Pending</option>
-                        <option value="Fulfilled">Fulfilled</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                </div>
-
-                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
-                    <button type="button" class="btn btn-outline" onclick="closeUpdateModal()">Cancel</button>
-                    <button type="submit" class="btn btn-success">Update Status</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="/static/js/requests_new.js?v=1"></script>
+    <script src="/static/js/requests_new.js?v=2"></script>
 </body>
 </html>

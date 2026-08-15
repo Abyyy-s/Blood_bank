@@ -1,0 +1,67 @@
+:root {
+  --screening-ink: #123b4a;
+  --screening-muted: #6d8892;
+  --screening-red: #c92345;
+  --screening-red-soft: #fff0f3;
+  --screening-line: #e7ecec;
+  --screening-green: #2f8061;
+  --screening-green-soft: #e9f7ef;
+}
+
+.donor-health-page { background: #fff; color: var(--screening-ink); }
+.donor-health-page .main-content-with-sidebar { min-height: 100vh; }
+.donor-health-page .screening-workspace { max-width: 1180px; margin: 0 auto; padding: 3.5rem 2.75rem 5rem; }
+.donor-health-page .screening-intro { display:flex; align-items:flex-end; justify-content:space-between; gap:2rem; margin-bottom:2rem; }
+.donor-health-page .screening-eyebrow { margin:0 0 .65rem; color:var(--screening-red); font-size:.72rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+.donor-health-page .screening-intro .page-title { margin:0; color:var(--screening-ink); font-size:clamp(2.3rem,4vw,4rem); line-height:1; }
+.donor-health-page .screening-intro .page-subtitle { max-width:620px; margin:.9rem 0 0; color:var(--screening-muted); font-size:1rem; }
+.donor-health-page .screening-action { flex:0 0 auto; }
+
+.screening-overview { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.25rem; }
+.screening-stat { position:relative; overflow:hidden; min-height:125px; padding:1.35rem 1.45rem; border:1px solid var(--screening-line); border-radius:24px; background:linear-gradient(145deg,#fff,#fff8f9); box-shadow:0 12px 32px rgba(18,59,74,.06); }
+.screening-stat::after { content:""; position:absolute; width:90px; height:90px; right:-28px; bottom:-35px; border-radius:50%; background:var(--screening-red-soft); }
+.screening-stat-label { position:relative; z-index:1; color:#7b9299; font-size:.72rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+.screening-stat-value { position:relative; z-index:1; display:block; margin-top:.55rem; color:var(--screening-ink); font-size:2rem; font-weight:800; }
+.screening-stat-note { position:relative; z-index:1; color:var(--screening-muted); font-size:.78rem; }
+
+.screening-history { border:1px solid var(--screening-line); border-radius:28px; overflow:hidden; background:#fff; box-shadow:0 16px 42px rgba(18,59,74,.07); }
+.screening-history-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.5rem 1.6rem; border-bottom:1px solid var(--screening-line); }
+.screening-history-title { margin:0; font-size:1.15rem; }
+.screening-history-subtitle { margin:.3rem 0 0; color:var(--screening-muted); font-size:.82rem; }
+.screening-history-list { display:grid; }
+.screening-record { display:grid; grid-template-columns:62px minmax(180px,1fr) 1.4fr 150px; align-items:center; gap:1.25rem; padding:1.2rem 1.6rem; border-bottom:1px solid #eef1f1; transition:transform .25s ease,background .25s ease,box-shadow .25s ease; }
+.screening-record:last-child { border-bottom:0; }
+.screening-record:hover { background:#fffafb; transform:translateX(4px); box-shadow:inset 3px 0 0 var(--screening-red); }
+.screening-record-index { display:grid; place-items:center; width:44px; height:44px; border-radius:15px; background:var(--screening-red-soft); color:var(--screening-red); font-size:.75rem; font-weight:800; }
+.screening-donor-name { margin:0; font-weight:800; color:var(--screening-ink); }
+.screening-record-meta { display:flex; flex-wrap:wrap; gap:.5rem .9rem; margin-top:.35rem; color:var(--screening-muted); font-size:.76rem; }
+.screening-vitals { display:flex; flex-wrap:wrap; gap:.55rem; }
+.screening-vital { padding:.55rem .7rem; border:1px solid var(--screening-line); border-radius:13px; background:#fbfcfc; }
+.screening-vital strong { display:block; color:var(--screening-ink); font-size:.8rem; }
+.screening-vital span { color:var(--screening-muted); font-size:.67rem; }
+.screening-status { justify-self:end; padding:.55rem .75rem; border-radius:999px; font-size:.72rem; font-weight:800; white-space:nowrap; }
+.screening-status.eligible { color:var(--screening-green); background:var(--screening-green-soft); }
+.screening-status.ineligible { color:#b42318; background:#fff0ef; }
+
+.screening-empty { padding:4rem 2rem; text-align:center; color:var(--screening-muted); }
+.screening-empty-icon { width:58px; height:58px; margin:0 auto 1rem; display:grid; place-items:center; border-radius:20px; background:var(--screening-red-soft); color:var(--screening-red); font-size:1.35rem; }
+
+.donor-health-page .screening-modal .modal-content { border-radius:28px; border:1px solid #e9eeee; box-shadow:0 28px 80px rgba(18,59,74,.18); }
+.donor-health-page .screening-modal .modal-header { border-bottom:1px solid var(--screening-line); }
+.donor-health-page .screening-modal .modal-title { color:var(--screening-ink); }
+.donor-health-page .screening-modal .form-input:focus,
+.donor-health-page .screening-modal .form-select:focus { border-color:var(--screening-red); box-shadow:0 0 0 4px rgba(201,35,69,.1); }
+.donor-health-page .screening-note { margin-top:1rem; border-radius:16px; }
+
+@media (max-width: 900px) {
+  .donor-health-page .screening-workspace { padding:2.25rem 1.25rem 4rem; }
+  .donor-health-page .screening-intro { align-items:flex-start; flex-direction:column; }
+  .screening-overview { grid-template-columns:1fr; }
+  .screening-record { grid-template-columns:52px 1fr; }
+  .screening-vitals { grid-column:2; }
+  .screening-status { grid-column:2; justify-self:start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screening-record { transition:none; }
+}
