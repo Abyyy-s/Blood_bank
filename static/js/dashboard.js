@@ -1,18 +1,6 @@
 // use relative origin so cookies always accompany requests (localhost vs 127.0.0.1 issues)
 const API_URL = '';
 
-// Blood group colors
-const bloodGroupColors = {
-    'A+': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    'A-': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    'B+': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    'B-': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    'AB+': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    'AB-': 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
-    'O+': 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-    'O-': 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
-};
-
 // Fetch and display dashboard data
 async function loadDashboard() {
     try {
@@ -25,10 +13,13 @@ async function loadDashboard() {
         document.getElementById('pendingRequests').textContent = data.pending_requests || 0;
 
         // Display blood stock
-        displayBloodStock(data.stock_by_group || []);
+        const stock = data.stock_by_group || [];
+        displayBloodStock(stock);
+        displayInventoryWatch(stock);
 
         // Load recent requests
-        await loadRecentRequests();
+        const requests = await loadRecentRequests();
+        displayRequestActivity(requests || []);
     } catch (error) {
         console.error('Error loading dashboard:', error);
         showAlert('Error loading dashboard data', 'error');
@@ -48,23 +39,44 @@ function displayBloodStock(stockData) {
         const stock = stockData.find(s => s.blood_group === group);
         const units = stock ? stock.total_units : 0;
         
-        const stockCard = document.createElement('div');
-        stockCard.className = 'card';
-        stockCard.style.background = bloodGroupColors[group] || 'var(--bg-card)';
-        stockCard.style.color = 'white';
-        stockCard.style.padding = '1.5rem';
-        stockCard.style.textAlign = 'center';
+        const stockCard = document.createElement('article');
+        const stockState = units < 10 ? 'low' : units < 30 ? 'normal' : 'healthy';
+        const stockLabel = units < 10 ? 'Low stock' : units < 30 ? 'Normal stock' : 'Good stock';
+        const stockIcon = units < 10 ? 'fa-triangle-exclamation' : 'fa-check';
+        stockCard.className = `stock-card stock-card-${stockState}`;
         
         stockCard.innerHTML = `
-            <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">${group}</div>
-            <div style="font-size: 1.5rem; font-weight: 600;">${units} Units</div>
-            <div style="opacity: 0.9; font-size: 0.9rem; margin-top: 0.5rem;">
-                ${units < 10 ? '⚠️ Low Stock' : units < 30 ? '✓ Normal' : '✓ Good Stock'}
-            </div>
+            <div class="stock-card-topline"><span class="stock-group">${group}</span><span class="stock-status"><i class="fas ${stockIcon}" aria-hidden="true"></i> ${stockLabel}</span></div>
+            <div class="stock-units"><strong>${units}</strong><span>units available</span></div>
         `;
         
         stockGrid.appendChild(stockCard);
     });
+}
+
+function displayInventoryWatch(stockData) {
+    const container = document.getElementById('inventoryWatch');
+    if (!container) return;
+    const watchGroups = stockData.filter(item => Number(item.total_units || 0) < 10)
+        .sort((a, b) => Number(a.total_units || 0) - Number(b.total_units || 0));
+    if (!watchGroups.length) {
+        container.innerHTML = '<div class="watch-empty"><i class="fas fa-circle-check" aria-hidden="true"></i><div><strong>Inventory is stable</strong><span>No blood group is currently below the low-stock threshold.</span></div></div>';
+        return;
+    }
+    container.innerHTML = watchGroups.slice(0, 4).map(item => `
+        <div class="watch-item"><span class="watch-group">${item.blood_group}</span><div><strong>${item.total_units} units left</strong><span>Below the 10-unit attention threshold</span></div><i class="fas fa-triangle-exclamation" aria-hidden="true"></i></div>`).join('');
+}
+
+function displayRequestActivity(requests) {
+    const container = document.getElementById('requestActivity');
+    if (!container) return;
+    const active = requests.filter(req => ['Pending', 'Approved'].includes(req.status)).slice(0, 4);
+    if (!active.length) {
+        container.innerHTML = '<div class="watch-empty"><i class="fas fa-inbox" aria-hidden="true"></i><div><strong>The request queue is clear</strong><span>There are no pending or approved requests to action.</span></div></div>';
+        return;
+    }
+    container.innerHTML = active.map(req => `
+        <div class="activity-item"><span class="blood-type blood-type-small">${req.blood_group}</span><div><strong>${req.hospital_name}</strong><span>${req.quantity_units} unit${req.quantity_units === 1 ? '' : 's'} · ${req.component_type}</span></div><span class="activity-status status-${String(req.urgency_level || '').toLowerCase()}">${req.urgency_level}</span></div>`).join('');
 }
 
 // Load recent requests
@@ -84,7 +96,7 @@ async function loadRecentRequests() {
                     </td>
                 </tr>
             `;
-            return;
+            return requests;
         }
         
         // Show only first 5 requests
@@ -104,6 +116,7 @@ async function loadRecentRequests() {
             `;
             tableBody.appendChild(row);
         });
+        return requests;
     } catch (error) {
         console.error('Error loading requests:', error);
         document.getElementById('requestsTableBody').innerHTML = `
@@ -113,6 +126,7 @@ async function loadRecentRequests() {
                 </td>
             </tr>
         `;
+        return [];
     }
 }
 

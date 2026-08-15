@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LifeLink - Login</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             display: flex;
@@ -150,9 +151,57 @@
             .login-card { flex-direction: column; }
             .login-left { display: none; }
         }
+        /* Standalone Life Link entry experience; authentication form IDs/behavior remain unchanged. */
+        body.lifeline-entry { display:block; min-height:100vh; overflow-x:hidden; background:#102f3c; color:#fff; }
+        .lifeline-entry::before { display:none; }
+        .entry-stage { position:relative; display:grid; grid-template-columns:minmax(0,1.35fr) minmax(360px,.8fr); gap:clamp(28px,6vw,92px); align-items:center; min-height:100vh; max-width:1360px; margin:auto; padding:48px clamp(24px,6vw,88px); }
+        .entry-stage::before, .entry-stage::after { content:''; position:absolute; z-index:0; border-radius:50%; pointer-events:none; }
+        .entry-stage::before { width:560px; height:560px; top:-220px; left:-160px; background:radial-gradient(circle,rgba(214,57,78,.34),transparent 68%); }
+        .entry-stage::after { width:520px; height:520px; right:-160px; bottom:-220px; background:radial-gradient(circle,rgba(76,169,194,.22),transparent 68%); }
+        .entry-hero, .login-card { position:relative; z-index:1; }
+        .entry-hero { max-width:680px; animation:entryRise .7s cubic-bezier(.22,1,.36,1) both; }
+        .entry-kicker { margin:0 0 18px; color:#f4a4af; font-size:.76rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+        .entry-brand { display:flex; align-items:center; gap:12px; margin-bottom:28px; font-size:1.05rem; font-weight:800; }
+        .entry-brand-mark { display:grid; place-items:center; width:38px; height:38px; border-radius:11px; background:#c92b3e; }
+        .entry-hero h1 { max-width:11ch; margin:0; color:#fff; font-size:clamp(3rem,6vw,5.4rem); line-height:.98; letter-spacing:-.065em; }
+        .entry-hero h1 em { color:#ffb3bd; font-style:normal; }
+        .entry-copy { max-width:48ch; margin:24px 0 30px; color:#c7d8de; font-size:1.06rem; line-height:1.65; }
+        .entry-path { display:flex; flex-wrap:wrap; gap:9px; color:#e6f0f3; font-size:.82rem; font-weight:700; }
+        .entry-path span { display:inline-flex; align-items:center; gap:9px; }
+        .entry-path span:not(:last-child)::after { content:'→'; color:#82a4ae; }
+        .login-card { width:auto; max-width:none; display:block; border:1px solid rgba(255,255,255,.18); border-radius:18px; background:rgba(255,255,255,.97); box-shadow:0 24px 70px rgba(1,20,28,.34); overflow:visible; animation:entryRise .75s .12s cubic-bezier(.22,1,.36,1) both; }
+        .login-left { display:none; }
+        .login-right { padding:34px; }
+        .login-intro { margin-bottom:24px; }
+        .login-intro h2 { margin:0; color:#173a49; font-size:1.45rem; letter-spacing:-.035em; }
+        .login-intro p { margin:6px 0 0; color:#66808b; font-size:.9rem; }
+        .login-form label { color:#38515b; font-size:.84rem; font-weight:700; }
+        .login-form input, .login-form select { min-height:45px; border-color:#dbe5e8; border-radius:9px; color:#173a49; }
+        .login-form input:focus, .login-form select:focus { border-color:#c92b3e; box-shadow:0 0 0 3px rgba(201,43,62,.12); }
+        .btn-login { min-height:46px; border-radius:9px; background:#c92b3e; letter-spacing:.02em; transition:transform .18s ease,background .18s ease; }
+        .btn-login:hover { background:#a92335; transform:translateY(-1px); }
+        .entry-reassurance { display:flex; align-items:center; gap:8px; margin:18px 0 0; color:#66808b; font-size:.76rem; }
+        .entry-reassurance i { color:#218358; }
+        .entry-story { position:relative; z-index:1; max-width:1360px; margin:0 auto; padding:0 clamp(24px,6vw,88px) 64px; }
+        .entry-story-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.14); }
+        .entry-story-item { min-height:130px; padding:24px; background:rgba(10,38,49,.6); color:#d8e6ea; }
+        .entry-story-item i { color:#ffabb7; }
+        .entry-story-item strong { display:block; margin:15px 0 5px; color:#fff; font-size:.92rem; }
+        .entry-story-item span { font-size:.8rem; line-height:1.5; }
+        @keyframes entryRise { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+        @media (max-width:800px) { .entry-stage { grid-template-columns:1fr; gap:38px; min-height:0; padding-top:46px; } .entry-hero h1 { max-width:14ch; font-size:clamp(2.65rem,12vw,4rem); } .entry-story-grid { grid-template-columns:1fr; } .login-right { padding:27px 22px; } }
+        @media (prefers-reduced-motion:reduce) { .entry-hero, .login-card { animation:none; } }
     </style>
 </head>
-<body>
+<body class="lifeline-entry">
+    <main class="entry-stage">
+        <section class="entry-hero" aria-label="Life Link introduction">
+            <div class="entry-brand"><span class="entry-brand-mark"><i class="fas fa-heart-pulse" aria-hidden="true"></i></span> Life Link</div>
+            <p class="entry-kicker">Blood bank operations platform</p>
+            <h1>Every unit has a <em>route to life.</em></h1>
+            <p class="entry-copy">A calm, connected workspace for the people who register donors, safeguard inventory, and answer urgent hospital requests.</p>
+            <div class="entry-path" aria-label="Life Link workflow"><span>Donors</span><span>Screening</span><span>Inventory</span><span>Requests</span></div>
+        </section>
     <div class="login-card">
         <div class="login-left">
             <div class="logo-section">
@@ -167,6 +216,7 @@
             <div class="tagline">Connecting Lives Through Every Drop</div>
         </div>
         <div class="login-right">
+            <div class="login-intro"><h2>Welcome back</h2><p>Sign in to continue to your operational workspace.</p></div>
             <form id="loginForm" class="login-form" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -195,8 +245,17 @@
                 <div style="margin-top: 0.5rem; text-align: right;"><a href="#" style="font-size:0.85rem; color:var(--primary-color);">Forgot Password?</a></div>
                 <div class="form-error" id="errorGeneral"></div>
             </form>
+            <p class="entry-reassurance"><i class="fas fa-shield-heart" aria-hidden="true"></i> Secure, role-based access for every team.</p>
         </div>
     </div>
+    </main>
+    <section class="entry-story" aria-label="What Life Link supports">
+        <div class="entry-story-grid">
+            <div class="entry-story-item"><i class="fas fa-droplet" aria-hidden="true"></i><strong>Visible inventory</strong><span>Keep supply status close to the decisions that need it.</span></div>
+            <div class="entry-story-item"><i class="fas fa-hospital" aria-hidden="true"></i><strong>Responsive requests</strong><span>Give urgent hospital needs a clear operational path.</span></div>
+            <div class="entry-story-item"><i class="fas fa-users" aria-hidden="true"></i><strong>Connected care</strong><span>Track the workflow from donor registration through fulfillment.</span></div>
+        </div>
+    </section>
     <script>
         function togglePassword() {
             const pw = document.getElementById('password');

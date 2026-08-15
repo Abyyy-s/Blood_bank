@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/static/css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="app-page dashboard-page">
     <script src="/static/js/auth.js?v=2"></script>
     <script>checkAuth(['Admin','Staff']);</script>
     <!-- Sidebar Navigation (replaces top nav) -->
@@ -36,67 +36,86 @@
 
     <div class="main-content-with-sidebar">
         <nav class="sidebar-top-nav">
-            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
-                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
+            <div class="topbar-content">
+                <div class="topbar-context"><span class="topbar-context-dot"></span>Operations centre</div>
+                <div id="userGreeting" class="user-greeting"></div>
             </div>
         </nav>
         <!-- Main Content -->
-    <div class="container">
+    <main class="container dashboard-container">
         <!-- Page Header -->
-        <div class="page-header">
-            <h1 class="page-title">Blood Bank Dashboard</h1>
-            <p class="page-subtitle">Real-time overview of blood bank operations</p>
-        </div>
+        <header class="page-header dashboard-header dashboard-reveal">
+            <div>
+                <p class="page-eyebrow"><i class="fas fa-droplet" aria-hidden="true"></i> Life Link overview</p>
+                <h1 class="page-title">Blood bank dashboard</h1>
+                <p class="page-subtitle">Monitor supply, donors, and incoming hospital requests from one place.</p>
+            </div>
+            <a href="/static/requests.html" class="btn btn-primary dashboard-header-action"><i class="fas fa-arrow-right" aria-hidden="true"></i> Review requests</a>
+        </header>
 
         <!-- Stats Grid -->
         <div class="stats-grid">
-            <div class="stat-card">
+            <article class="stat-card dashboard-reveal">
                 <div class="stat-header">
                     <span class="stat-label">Total Donors</span>
-                    <span class="stat-icon">👥</span>
+                    <span class="stat-icon icon-chip icon-chip-blue"><i class="fas fa-users" aria-hidden="true"></i></span>
                 </div>
                 <div class="stat-value" id="totalDonors">-</div>
                 <p class="stat-description">Active registered donors</p>
-            </div>
+            </article>
 
-            <div class="stat-card">
+            <article class="stat-card dashboard-reveal">
                 <div class="stat-header">
                     <span class="stat-label">Total Donations</span>
-                    <span class="stat-icon">💉</span>
+                    <span class="stat-icon icon-chip icon-chip-red"><i class="fas fa-hand-holding-medical" aria-hidden="true"></i></span>
                 </div>
                 <div class="stat-value" id="totalDonations">-</div>
                 <p class="stat-description">All time donations</p>
-            </div>
+            </article>
 
-            <div class="stat-card">
+            <article class="stat-card dashboard-reveal">
                 <div class="stat-header">
                     <span class="stat-label">Pending Requests</span>
-                    <span class="stat-icon">📋</span>
+                    <span class="stat-icon icon-chip icon-chip-amber"><i class="fas fa-clipboard-list" aria-hidden="true"></i></span>
                 </div>
                 <div class="stat-value" id="pendingRequests">-</div>
                 <p class="stat-description">Awaiting fulfillment</p>
-            </div>
+            </article>
         </div>
 
         <!-- Blood Stock Overview -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Blood Stock by Type</h2>
-                <span class="card-icon">🩸</span>
+        <section class="card section-card dashboard-reveal">
+            <div class="card-header section-card-header">
+                <div>
+                    <p class="section-kicker">Inventory snapshot</p>
+                    <h2 class="card-title">Blood stock by group</h2>
+                </div>
+                <a href="/static/stock.html" class="text-action">Open inventory <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
             </div>
-            <div class="grid grid-4" id="stockGrid">
+            <div class="dashboard-stock-grid" id="stockGrid" aria-live="polite">
                 <!-- Stock cards will be dynamically inserted here -->
             </div>
-        </div>
+        </section>
 
-        <div style="height: 2rem;"></div>
+        <section class="dashboard-operations dashboard-reveal" aria-label="Operational priorities">
+            <div class="card section-card dashboard-priority-panel">
+                <div class="card-header section-card-header"><div><p class="section-kicker">Needs attention</p><h2 class="card-title">Inventory watch</h2></div><a href="/static/stock.html" class="text-action">Review stock <i class="fas fa-arrow-right" aria-hidden="true"></i></a></div>
+                <div id="inventoryWatch" class="inventory-watch" aria-live="polite"></div>
+            </div>
+            <div class="card section-card dashboard-activity-panel">
+                <div class="card-header section-card-header"><div><p class="section-kicker">Live queue</p><h2 class="card-title">Request activity</h2></div><a href="/static/requests.html" class="text-action">Open queue <i class="fas fa-arrow-right" aria-hidden="true"></i></a></div>
+                <div id="requestActivity" class="request-activity" aria-live="polite"></div>
+            </div>
+        </section>
 
         <!-- Recent Requests -->
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">Recent Blood Requests</h2>
-                <a href="/static/requests.html" class="btn btn-primary">View All</a>
+        <section class="card section-card dashboard-reveal">
+            <div class="card-header section-card-header">
+                <div>
+                    <p class="section-kicker">Request queue</p>
+                    <h2 class="card-title">Recent blood requests</h2>
+                </div>
+                <a href="/static/requests.html" class="btn btn-secondary">View all requests</a>
             </div>
             <div class="table-container">
                 <table class="table">
@@ -121,9 +140,10 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
+    <script src="/static/js/app-shell.js?v=1"></script>
     <script src="/static/js/sidebar.js"></script>
     <script src="/static/js/dashboard.js?v=2"></script>
 </body>

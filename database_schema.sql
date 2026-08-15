@@ -90,6 +90,18 @@ CREATE TABLE IF NOT EXISTS blood_request (
     FOREIGN KEY (hospital_id) REFERENCES hospital(hospital_id)
 );
 
+-- Records the precise stock rows used when fulfilling a request so an Admin
+-- reset from Fulfilled back to Pending can restore those units correctly.
+CREATE TABLE IF NOT EXISTS blood_request_stock_allocation (
+    allocation_id INT PRIMARY KEY AUTO_INCREMENT,
+    request_id INT NOT NULL,
+    stock_id INT NOT NULL,
+    quantity_units INT NOT NULL,
+    FOREIGN KEY (request_id) REFERENCES blood_request(request_id),
+    FOREIGN KEY (stock_id) REFERENCES blood_stock(stock_id),
+    UNIQUE KEY uq_request_stock_allocation (request_id, stock_id)
+);
+
 -- Insert sample blood banks
 INSERT INTO blood_bank (bank_name, location) VALUES
 ('City Central Blood Bank', 'Downtown, Main Street'),
