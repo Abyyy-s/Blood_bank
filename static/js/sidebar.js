@@ -4,8 +4,9 @@ function initTailbarNavigation() {
     const navLinks = document.querySelectorAll('.sidebar-nav-link');
     
     navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (currentPage.includes(href.replace('/static/', '').replace('.html', ''))) {
+        const href = link.getAttribute('href') || '';
+        const pageName = href.replace('/static/', '').replace('.html', '');
+        if (pageName && currentPage.includes(pageName)) {
             link.classList.add('active');
         } else {
             link.classList.remove('active');
@@ -28,13 +29,14 @@ async function loadUserToSidebar() {
 
 // Hide/show nav items based on user role
 function filterSidebarByRole(role) {
+    const common = ['profile', 'notifications', 'settings'];
     const mapping = {
-        Admin: ['index.html', 'profile', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'hospitals', 'reports'],
-        Staff: ['index.html', 'profile', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'reports'],
-        Hospital: ['profile', 'requests']
+        Admin: ['index.html', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'hospitals', 'reports', ...common],
+        Staff: ['index.html', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'reports', ...common],
+        Hospital: ['profile', 'requests', 'notifications', 'settings']
     };
     
-    const allowed = mapping[role] || [];
+    const allowed = mapping[role] || common;
     const navLinks = document.querySelectorAll('.sidebar-nav-link');
     
     navLinks.forEach(link => {
@@ -44,7 +46,7 @@ function filterSidebarByRole(role) {
             return;
         }
         
-        const href = link.getAttribute('href');
+        const href = link.getAttribute('href') || '';
         const isAllowed = allowed.some(item => href.includes(item));
         link.style.display = isAllowed ? '' : 'none';
     });
@@ -91,16 +93,16 @@ function updateNotificationBadge(count) {
             badge = document.createElement('span');
             badge.id = 'notifBadge';
             Object.assign(badge.style, {
-                background:   '#C0392B',
-                color:        'white',
+                background: '#C0392B',
+                color: 'white',
                 borderRadius: '50%',
-                fontSize:     '0.7rem',
-                width:        '18px',
-                height:       '18px',
-                display:      'inline-flex',
-                alignItems:   'center',
+                fontSize: '0.7rem',
+                width: '18px',
+                height: '18px',
+                display: 'inline-flex',
+                alignItems: 'center',
                 justifyContent: 'center',
-                marginLeft:   '4px',
+                marginLeft: '4px',
             });
             bellLink.appendChild(badge);
         }
