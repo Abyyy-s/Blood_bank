@@ -17,13 +17,27 @@
 
     function addClass(element, ...names) { if (element) element.classList.add(...names); }
 
+    function loadAsset(type, href, marker) {
+        if (document.querySelector(`[data-life-link-${marker}]`)) return;
+        const el = document.createElement(type === 'css' ? 'link' : 'script');
+        if (type === 'css') {
+            el.rel = 'stylesheet';
+            el.href = href;
+        } else {
+            el.src = href;
+            el.defer = true;
+        }
+        el.dataset[`lifeLink${marker.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('')}`] = 'true';
+        document.head.appendChild(el);
+    }
+
     function loadModernUI() {
-        if (document.querySelector('link[data-life-link-modern-ui]')) return;
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = '/static/css/modern-ui.css?v=1';
-        link.dataset.lifeLinkModernUi = 'true';
-        document.head.appendChild(link);
+        loadAsset('css', '/static/css/modern-ui.css?v=2', 'modern-ui');
+    }
+
+    function loadModernBehavior() {
+        loadAsset('js', '/static/js/modern-motion.js?v=2', 'modern-motion');
+        loadAsset('js', '/static/js/modern-ux.js?v=1', 'modern-ux');
     }
 
     function iconifyBrand() {
@@ -52,23 +66,33 @@
         nav.dataset.organised = 'true';
         nav.setAttribute('aria-label', 'Primary navigation');
         const anchors = [...nav.querySelectorAll('.sidebar-nav-link:not(.logout-link)')];
-        const after = { 'donors.html': 'Clinical workflow', 'stock.html': 'Operations', 'reports.html': 'System' };
+        const groups = { 'donors.html': 'Clinical workflow', 'stock.html': 'Operations', 'reports.html': 'Insights & system' };
         anchors.forEach((anchor) => {
             const file = (anchor.getAttribute('href') || '').split('/').pop();
-            if (!after[file]) return;
+            if (!groups[file]) return;
             const label = document.createElement('li');
             label.className = 'sidebar-section-label';
-            label.textContent = after[file];
+            label.textContent = groups[file];
             anchor.closest('li').before(label);
         });
+
+        if (!nav.querySelector('a[href*="notifications"]')) {
+            const logout = nav.querySelector('.logout-link')?.closest('li');
+            const item = document.createElement('li');
+            item.className = 'sidebar-nav-item sidebar-notification-item';
+            item.innerHTML = '<a href="/static/notifications.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-bell"></i></span><span>Notifications</span></a>';
+            if (logout) nav.insertBefore(item, logout); else nav.appendChild(item);
+        }
     }
 
     function composeTopbar(meta) {
         const topbar = document.querySelector('.sidebar-top-nav');
         if (!topbar) return;
         const greeting = document.getElementById('userGreeting');
-        topbar.innerHTML = '<div class="topbar-content"><div class="topbar-context"><span class="topbar-context-dot"></span>' + meta.crumb + '</div></div>';
-        if (greeting) topbar.querySelector('.topbar-content').append(greeting);
+        topbar.innerHTML = '<div class="topbar-content"><div class="topbar-context"><span class="topbar-context-dot"></span><span>' + meta.crumb + '</span></div><div class="topbar-actions"><span class="topbar-hint">Life Link operations</span><button class="topbar-command" type="button" aria-label="Open quick actions"><i class="fas fa-command"></i><span>Quick actions</span><kbd>⌘K</kbd></button></div></div>';
+        if (greeting) topbar.querySelector('.topbar-content').prepend(greeting);
+        const command = topbar.querySelector('.topbar-command');
+        command?.addEventListener('click', () => document.dispatchEvent(new CustomEvent('lifelink:quick-actions')));
     }
 
     function composeWorkspace(meta) {
@@ -90,7 +114,7 @@
         const cards = [...container.children].filter((child) => child.classList && child.classList.contains('card'));
         cards.forEach((card) => {
             const hasTable = !!card.querySelector('table');
-            const hasControls = !!card.querySelector('select, #searchInput');
+            const hasControls = !!card.querySelector('select, #searchInput, input[type="search"]');
             if (hasTable) addClass(card, 'workspace-data-card');
             else if (hasControls) addClass(card, 'workspace-toolbar');
             else addClass(card, 'workspace-panel');
@@ -112,8 +136,8 @@
                 const note = document.createElement('p');
                 note.className = 'workspace-rail-note';
                 note.innerHTML = meta.family === 'inventory'
-                    ? '<i class="fas fa-circle-info" aria-hidden="true"></i> Filter across blood group, component, and blood bank.'
-                    : '<i class="fas fa-circle-info" aria-hidden="true"></i> Start with urgency and status, then process the request.';
+                    ? '<i class="fas fa-circle-info" aria-hidden="true"></i> Filter by blood group, component, or blood bank.'
+                    : '<i class="fas fa-circle-info" aria-hidden="true"></i> Prioritize urgency and status, then process the request.';
                 toolbar.append(note);
             }
         }
@@ -152,8 +176,8 @@
         const container = document.querySelector('.app-workspace');
         if (!container) return;
         const candidates = container.querySelectorAll('.card, .stat-card, .page-header, .table-container, .alert, .grid > *, .stats-grid > *');
-        candidates.forEach((el, i) => { if (!el.classList.contains('ll-reveal')) { el.classList.add('ll-reveal'); if (i < 4) el.style.setProperty('--ll-delay', `${i * 55}ms`); } });
-        if (!('IntersectionObserver' in window)) { candidates.forEach(el => el.classList.add('ll-visible')); return; }
+        candidates.forEach((el, i) => { if (!el.classList.contains('ll-reveal')) { el.classList.add('ll-reveal'); if (i < 5) el.style.setProperty('--ll-delay', `${i * 55}ms`); } });
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) { candidates.forEach(el => el.classList.add('ll-visible')); return; }
         const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('ll-visible'); obs.unobserve(entry.target); } });
         }, { threshold: .08, rootMargin: '0px 0px -35px 0px' });
@@ -182,6 +206,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         loadModernUI();
+        loadModernBehavior();
         const meta = pageMeta[page];
         if (!meta) return;
         iconifyBrand();
