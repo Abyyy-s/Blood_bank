@@ -1,143 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Settings - Blood Bank Management System">
-    <title>Settings - Blood Bank Management System</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Life Link account and workspace settings"><title>Settings · Life Link</title>
+    <link rel="stylesheet" href="/static/css/style.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .settings-layout{display:grid;grid-template-columns:240px 1fr;gap:1.25rem;align-items:start}.settings-nav{position:sticky;top:1.5rem;padding:1rem}.settings-tab{display:flex;align-items:center;gap:.75rem;width:100%;padding:.8rem;border:0;background:transparent;border-radius:13px;text-align:left;font-weight:700;color:#7d6268;cursor:pointer}.settings-tab.active,.settings-tab:hover{background:#fff0f2;color:#b71936}.settings-tab i{width:20px;text-align:center}.settings-stack{display:grid;gap:1.25rem}.settings-card{padding:1.35rem}.settings-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.2rem}.settings-head h2{margin:0;font-size:1.1rem}.settings-head p{margin:.35rem 0 0;color:#8b7076;font-size:.84rem}.settings-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#fff0f2;color:#b71936}.settings-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.settings-field{display:grid;gap:.4rem}.settings-field.full{grid-column:1/-1}.settings-field label{font-size:.76rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:#8b7076}.settings-field input{width:100%;box-sizing:border-box;padding:.82rem 1rem;border:1px solid rgba(145,25,42,.14);border-radius:13px;background:#fff;color:#321016;font:inherit;outline:none;transition:.2s}.settings-field input:focus{border-color:#b71936;box-shadow:0 0 0 4px rgba(183,25,54,.08)}.settings-note{padding:.9rem 1rem;border-radius:14px;background:#faf7f7;color:#7d6268;font-size:.82rem}.settings-toggle{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.95rem 0;border-top:1px solid rgba(145,25,42,.1)}.settings-toggle:first-of-type{border-top:0}.settings-toggle strong{display:block}.settings-toggle span{display:block;margin-top:.2rem;color:#8b7076;font-size:.78rem}.switch{position:relative;width:46px;height:26px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.switch-track{position:absolute;inset:0;border-radius:999px;background:#e8dcde;cursor:pointer;transition:.2s}.switch-track:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.15);transition:.2s}.switch input:checked+.switch-track{background:#b71936}.switch input:checked+.switch-track:before{transform:translateX(20px)}.settings-actions{display:flex;justify-content:flex-end;margin-top:1rem}.settings-hidden{display:none!important}@media(max-width:800px){.settings-layout{grid-template-columns:1fr}.settings-nav{position:static}.settings-form{grid-template-columns:1fr}.settings-field.full{grid-column:auto}}
+    </style>
 </head>
 <body>
-    <script src="/static/js/auth.js?v=2"></script>
-    <script>checkAuth(['Admin','Staff','Hospital']);</script>
-
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">🩸</div>
-            <h2 class="sidebar-title">Life Link</h2>
-        </div>
-        <nav>
-            <ul class="sidebar-nav">
-                <li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Health Screening</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-box"></i></span><span>Blood Stock</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span><span>Requests</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital-user"></i></span><span>Hospitals</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/notifications.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-bell"></i></span><span>Notifications</span></a></li>
-                <li class="sidebar-nav-item"><a href="/static/settings.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-cog"></i></span><span>Settings</span></a></li>
-                <li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <div class="main-content-with-sidebar">
-        <nav class="sidebar-top-nav">
-            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
-                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-                <div id="userGreeting" class="user-greeting" style="position: relative; transform: none; right: auto; top: auto;"></div>
-            </div>
-        </nav>
-
-        <div class="container">
-            <div class="page-header">
-                <h1 class="page-title">Settings</h1>
-                <p class="page-subtitle">Manage your account preferences and system settings</p>
-            </div>
-
-            <div style="max-width: 800px;">
-                <div class="card">
-                    <h3>Account Settings</h3>
-                    <hr>
-                    <form id="accountForm">
-                        <div class="form-group">
-                            <label>Email Address</label>
-                            <input type="email" id="email" class="form-input" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Full Name</label>
-                            <input type="text" id="fullName" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Number</label>
-                            <input type="tel" id="contact" class="form-input">
-                        </div>
-                        <button type="button" class="btn-primary" onclick="updateAccount()">Save Changes</button>
-                    </form>
-                </div>
-
-                <div class="card" style="margin-top: 1.5rem;">
-                    <h3>Security Settings</h3>
-                    <hr>
-                    <div class="form-group">
-                        <label>Change Password</label>
-                        <input type="password" id="currentPassword" class="form-input" placeholder="Current Password">
-                        <input type="password" id="newPassword" class="form-input" placeholder="New Password" style="margin-top: 0.5rem;">
-                        <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm Password" style="margin-top: 0.5rem;">
-                        <button type="button" class="btn-primary" style="margin-top: 1rem;" onclick="changePassword()">Update Password</button>
-                    </div>
-                </div>
-
-                <div class="card" style="margin-top: 1.5rem;">
-                    <h3>Notification Preferences</h3>
-                    <hr>
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 0;">
-                        <span>Email Notifications</span>
-                        <input type="checkbox" id="emailNotif" checked>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-top: 1px solid var(--border-color);">
-                        <span>System Alerts</span>
-                        <input type="checkbox" id="systemAlerts" checked>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-top: 1px solid var(--border-color);">
-                        <span>Blood Stock Alerts</span>
-                        <input type="checkbox" id="stockAlerts" checked>
-                    </div>
-                    <button type="button" class="btn-primary" style="margin-top: 1rem;" onclick="updateNotifications()">Save Preferences</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="/static/js/app-shell.js?v=1"></script>
-    <script src="/static/js/sidebar.js"></script>
-    <script src="/static/js/settings.js?v=1"></script>
-
-    <style>
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-sm);
-            font-size: 0.95rem;
-            font-family: inherit;
-        }
-        .form-input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all var(--transition-normal);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-    </style>
-</body>
-</html>
+<script src="/static/js/auth.js?v=2"></script><script>checkAuth(['Admin','Staff','Hospital']);</script>
+<aside class="sidebar"><div class="sidebar-header"><div class="sidebar-logo">🩸</div><h2 class="sidebar-title">Life Link</h2></div><nav><ul class="sidebar-nav">
+<li class="sidebar-nav-item"><a href="/static/index.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-line"></i></span><span>Dashboard</span></a></li><li class="sidebar-nav-item"><a href="/static/profile.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></a></li><li class="sidebar-nav-item"><a href="/static/donors.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-users"></i></span><span>Donors</span></a></li><li class="sidebar-nav-item"><a href="/static/donor_health.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-heart-pulse"></i></span><span>Health Screening</span></a></li><li class="sidebar-nav-item"><a href="/static/donations.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-syringe"></i></span><span>Donations</span></a></li><li class="sidebar-nav-item"><a href="/static/stock.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-box"></i></span><span>Blood Stock</span></a></li><li class="sidebar-nav-item"><a href="/static/requests.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-clipboard"></i></span><span>Requests</span></a></li><li class="sidebar-nav-item"><a href="/static/hospitals.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-hospital"></i></span><span>Hospitals</span></a></li><li class="sidebar-nav-item"><a href="/static/reports.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-chart-bar"></i></span><span>Reports</span></a></li><li class="sidebar-nav-item"><a href="/static/notifications.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas fa-bell"></i></span><span>Notifications</span></a></li><li class="sidebar-nav-item"><a href="/static/settings.html" class="sidebar-nav-link active"><span class="sidebar-nav-icon"><i class="fas fa-sliders"></i></span><span>Settings</span></a></li><li class="sidebar-nav-item"><a href="/logout" class="sidebar-nav-link logout-link"><span class="sidebar-nav-icon"><i class="fas fa-right-from-bracket"></i></span><span>Logout</span></a></li>
+</ul></nav></aside>
+<div class="main-content-with-sidebar"><nav class="sidebar-top-nav"><div style="display:flex;align-items:center;gap:15px;flex:1"><button class="sidebar-toggle" onclick="toggleSidebar()">☰</button><div id="userGreeting" class="user-greeting" style="position:relative;transform:none;right:auto;top:auto"></div></div></nav>
+<div class="container"><div class="page-header"><p class="page-eyebrow">Account / Settings</p><h1 class="page-title">Settings that stay out of your way.</h1><p class="page-subtitle">Manage your identity, security, and operational notifications from one calm workspace.</p></div>
+<div class="settings-layout"><nav class="card settings-nav" aria-label="Settings sections"><button class="settings-tab active" data-settings-tab="account"><i class="fas fa-user"></i>Account</button><button class="settings-tab" data-settings-tab="security"><i class="fas fa-shield-halved"></i>Security</button><button class="settings-tab" data-settings-tab="notifications"><i class="fas fa-bell"></i>Notifications</button></nav><div class="settings-stack">
+<section class="card settings-card" data-settings-panel="account"><div class="settings-head"><div><h2>Account identity</h2><p>Keep the information used across your Life Link workspace current.</p></div><div class="settings-icon"><i class="fas fa-id-card"></i></div></div><form id="accountForm" class="settings-form"><div class="settings-field full"><label for="email">Email address</label><input type="email" id="email" readonly></div><div class="settings-field"><label for="fullName">Full name</label><input type="text" id="fullName" autocomplete="name"></div><div class="settings-field"><label for="contact">Contact number</label><input type="tel" id="contact" autocomplete="tel"></div></form><div class="settings-actions"><button type="button" class="btn btn-primary" onclick="updateAccount()"><i class="fas fa-check"></i> Save account</button></div></section>
+<section class="card settings-card settings-hidden" data-settings-panel="security"><div class="settings-head"><div><h2>Security</h2><p>Change your password without leaving the operations workspace.</p></div><div class="settings-icon"><i class="fas fa-shield-halved"></i></div></div><div class="settings-form"><div class="settings-field full"><label for="currentPassword">Current password</label><input type="password" id="currentPassword" autocomplete="current-password" placeholder="Enter current password"></div><div class="settings-field"><label for="newPassword">New password</label><input type="password" id="newPassword" autocomplete="new-password" placeholder="At least 6 characters"></div><div class="settings-field"><label for="confirmPassword">Confirm password</label><input type="password" id="confirmPassword" autocomplete="new-password" placeholder="Repeat new password"></div></div><div class="settings-note" style="margin-top:1rem"><i class="fas fa-lock"></i> Your password is handled by the existing secure profile endpoint; this redesign does not change authentication logic.</div><div class="settings-actions"><button type="button" class="btn btn-primary" onclick="changePassword()">Update password</button></div></section>
+<section class="card settings-card settings-hidden" data-settings-panel="notifications"><div class="settings-head"><div><h2>Notification preferences</h2><p>Choose which operational signals deserve your attention.</p></div><div class="settings-icon"><i class="fas fa-bell"></i></div></div><div class="settings-toggle"><div><strong>Email notifications</strong><span>Receive account and workflow updates.</span></div><label class="switch"><input type="checkbox" id="emailNotif" checked><span class="switch-track"></span></label></div><div class="settings-toggle"><div><strong>System alerts</strong><span>Important operational and request alerts.</span></div><label class="switch"><input type="checkbox" id="systemAlerts" checked><span class="switch-track"></span></label></div><div class="settings-toggle"><div><strong>Blood stock alerts</strong><span>Surface low or depleted inventory signals.</span></div><label class="switch"><input type="checkbox" id="stockAlerts" checked><span class="switch-track"></span></label></div><div class="settings-actions"><button type="button" class="btn btn-primary" onclick="updateNotifications()">Save preferences</button></div></section>
+</div></div></div></div></div>
+<script src="/static/js/app-shell.js?v=2"></script><script src="/static/js/sidebar.js"></script><script src="/static/js/settings.js?v=2"></script><script>document.addEventListener('DOMContentLoaded',()=>{const tabs=[...document.querySelectorAll('[data-settings-tab]')],panels=[...document.querySelectorAll('[data-settings-panel]')];tabs.forEach(tab=>tab.addEventListener('click',()=>{const key=tab.dataset.settingsTab;tabs.forEach(t=>t.classList.toggle('active',t===tab));panels.forEach(p=>p.classList.toggle('settings-hidden',p.dataset.settingsPanel!==key));}));});</script>
+</body></html>
