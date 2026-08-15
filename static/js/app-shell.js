@@ -1,108 +1,11 @@
 /* Life Link shared application shell. Navigation and workspace behavior live here. */
-(function () {
-    const page = (location.pathname.split('/').pop() || 'index.html').replace('.html', '') || 'index';
-    const pageMeta = {
-        index:{family:'command',crumb:'Command centre'}, donors:{family:'directory',crumb:'People / Donors'}, donor_health:{family:'clinical',crumb:'Clinical / Screening'}, donations:{family:'clinical',crumb:'Clinical / Donations'}, stock:{family:'inventory',crumb:'Inventory / Stock'}, requests:{family:'triage',crumb:'Operations / Requests'}, hospitals:{family:'directory',crumb:'Network / Hospitals'}, reports:{family:'analysis',crumb:'Insights / Reports'}, profile:{family:'account',crumb:'Account / Profile'}, notifications:{family:'feed',crumb:'Updates / Notifications'}, settings:{family:'account',crumb:'Account / Settings'}
-    };
-    const roleMap = {
-        Admin:['index','profile','donors','donor_health','donations','stock','requests','hospitals','reports','notifications','settings'],
-        Staff:['index','profile','donors','donor_health','donations','stock','requests','reports','notifications','settings'],
-        Hospital:['profile','requests','notifications','settings']
-    };
-
-    function loadAsset(type, href, marker) {
-        if (document.querySelector(`[data-life-link-${marker}]`)) return;
-        const el = document.createElement(type === 'css' ? 'link' : 'script');
-        if (type === 'css') { el.rel='stylesheet'; el.href=href; } else { el.src=href; el.defer=true; }
-        el.dataset[`lifeLink${marker.split('-').map(s=>s[0].toUpperCase()+s.slice(1)).join('')}`] = 'true';
-        document.head.appendChild(el);
-    }
-    function addClass(el,...names){ if(el) el.classList.add(...names); }
-    function currentUser(){ return window.lifeLinkUser || null; }
-
-    function organiseNavigation() {
-        const nav=document.querySelector('.sidebar-nav'); if(!nav) return;
-        const role=currentUser()?.role;
-        const allowed=roleMap[role] || [];
-        nav.querySelectorAll('.sidebar-nav-link').forEach(link=>{
-            const href=(link.getAttribute('href')||'').split('/').pop().replace('.html','');
-            if(link.classList.contains('logout-link')) { link.closest('li').style.display=''; return; }
-            link.closest('li').style.display=allowed.includes(href)?'':'none';
-        });
-        const ensure=(href,icon,label)=>{
-            if(nav.querySelector(`a[href*="${href}"]`)) return;
-            const logout=nav.querySelector('.logout-link')?.closest('li');
-            const item=document.createElement('li'); item.className='sidebar-nav-item'; item.innerHTML=`<a href="/static/${href}.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas ${icon}" aria-hidden="true"></i></span><span>${label}</span></a>`;
-            if(logout) nav.insertBefore(item,logout); else nav.appendChild(item);
-        };
-        ensure('notifications','fa-bell','Notifications');
-        ensure('settings','fa-sliders','Settings');
-        nav.querySelectorAll('.sidebar-nav-link').forEach(link=>{
-            const href=(link.getAttribute('href')||'').split('/').pop().replace('.html','');
-            if(!link.classList.contains('logout-link')) link.closest('li').style.display=allowed.includes(href)?'':'none';
-        });
-        nav.setAttribute('aria-label','Primary navigation');
-        nav.querySelectorAll('.sidebar-section-label').forEach(x=>x.remove());
-        const groups={'donors':'Clinical workflow','stock':'Operations','reports':'Insights & system'};
-        Object.entries(groups).forEach(([file,label])=>{
-            const anchor=nav.querySelector(`a[href$="/${file}.html"],a[href$="${file}.html"]`); if(!anchor || anchor.closest('li').style.display==='none') return;
-            const li=anchor.closest('li'); const section=document.createElement('li'); section.className='sidebar-section-label'; section.textContent=label; li.before(section);
-        });
-        nav.querySelectorAll('.sidebar-nav-link').forEach(link=>{
-            const href=(link.getAttribute('href')||'').split('/').pop().replace('.html','');
-            link.classList.toggle('active',href===page);
-        });
-    }
-
-    function iconifyBrand(){
-        const logo=document.querySelector('.sidebar-logo'); if(!logo) return;
-        logo.innerHTML='<i class="fas fa-heart-pulse" aria-hidden="true"></i>'; logo.setAttribute('aria-label','Life Link');
-        const header=logo.closest('.sidebar-header');
-        if(header && !header.querySelector('.sidebar-brand-row')){
-            const row=document.createElement('div'); row.className='sidebar-brand-row'; logo.before(row); row.append(logo);
-            const title=header.querySelector('.sidebar-title'); if(title) row.append(title);
-            const sub=document.createElement('div'); sub.className='sidebar-subtitle'; sub.textContent='Blood operations'; header.append(sub);
-        }
-    }
-
-    function composeTopbar(meta){
-        const topbar=document.querySelector('.sidebar-top-nav'); if(!topbar) return;
-        const role=currentUser()?.role;
-        topbar.innerHTML=`<div class="topbar-content"><div class="topbar-context"><span class="topbar-context-dot"></span><span>${meta.crumb}</span></div><div class="topbar-actions"><span class="topbar-hint">Life Link operations</span>${role==='Hospital'?'':'<button class="topbar-command" type="button" aria-label="Open quick actions"><i class="fas fa-command"></i><span>Quick actions</span><kbd>⌘K</kbd></button>'}</div></div>`;
-        const greeting=document.getElementById('userGreeting'); if(greeting) topbar.querySelector('.topbar-content').prepend(greeting);
-        topbar.querySelector('.topbar-command')?.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('lifelink:quick-actions')));
-    }
-
-    function composeWorkspace(meta){
-        const container=document.querySelector('.main-content-with-sidebar > .container'); if(!container) return;
-        addClass(document.body,'app-page','page-'+page,'workflow-'+meta.family); addClass(container,'app-workspace','workspace-'+meta.family);
-        const header=container.querySelector('.page-header');
-        if(header){ addClass(header,'workspace-header'); const title=header.querySelector('.page-title'); if(title&&!header.querySelector('.page-eyebrow')){const eyebrow=document.createElement('p');eyebrow.className='page-eyebrow';eyebrow.textContent=meta.crumb;title.before(eyebrow);} }
-        const cards=[...container.children].filter(c=>c.classList?.contains('card'));
-        cards.forEach(card=>{const hasTable=!!card.querySelector('table');const hasControls=!!card.querySelector('select,#searchInput,input[type="search"]');if(hasTable)addClass(card,'workspace-data-card');else if(hasControls)addClass(card,'workspace-toolbar');else addClass(card,'workspace-panel');const h=card.querySelector('.card-header');if(h)addClass(h,'workspace-card-header');});
-        container.querySelectorAll('.modal-content').forEach(modal=>addClass(modal,'ll-modal-content')); container.querySelectorAll('.table-container').forEach(table=>addClass(table,'ll-table-scroll'));
-        if(['inventory','triage'].includes(meta.family)){
-            const toolbar=container.querySelector('.workspace-toolbar'), dataCard=container.querySelector('.workspace-data-card');
-            if(toolbar&&dataCard&&!container.querySelector('.workspace-layout')){const layout=document.createElement('div');layout.className='workspace-layout';toolbar.before(layout);layout.append(toolbar,dataCard);const note=document.createElement('p');note.className='workspace-rail-note';note.innerHTML=meta.family==='inventory'?'<i class="fas fa-circle-info" aria-hidden="true"></i> Filter by blood group, component, or blood bank.':'<i class="fas fa-circle-info" aria-hidden="true"></i> Prioritize urgency and status, then process the request.';toolbar.append(note);}
-        }
-        if(meta.family==='clinical'&&header&&!header.querySelector('.workflow-steps')){const steps=document.createElement('ol');steps.className='workflow-steps';steps.innerHTML=page==='donations'?'<li>Choose donor</li><li>Confirm screening</li><li>Record component</li>':'<li>Select donor</li><li>Capture screening</li><li>Record outcome</li>';header.append(steps);}
-    }
-
-    function setupMobileSidebar(){
-        const sidebar=document.querySelector('.sidebar'); if(!sidebar||document.querySelector('.ll-menu-toggle')) return;
-        const button=document.createElement('button');button.className='ll-menu-toggle';button.type='button';button.setAttribute('aria-label','Open navigation');button.setAttribute('aria-expanded','false');button.innerHTML='<i class="fas fa-bars" aria-hidden="true"></i>';
-        const backdrop=document.createElement('div');backdrop.className='ll-sidebar-backdrop';document.body.append(button,backdrop);
-        const close=()=>{sidebar.classList.remove('ll-open');document.body.classList.remove('ll-sidebar-open');button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Open navigation');button.innerHTML='<i class="fas fa-bars" aria-hidden="true"></i>';};
-        button.addEventListener('click',()=>{const open=sidebar.classList.toggle('ll-open');document.body.classList.toggle('ll-sidebar-open',open);button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',open?'Close navigation':'Open navigation');button.innerHTML=open?'<i class="fas fa-xmark" aria-hidden="true"></i>':'<i class="fas fa-bars" aria-hidden="true"></i>';});
-        backdrop.addEventListener('click',close);sidebar.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
-    }
-
-    document.addEventListener('DOMContentLoaded',async()=>{
-        loadAsset('css','/static/css/modern-ui.css?v=2','modern-ui');
-        loadAsset('css','/static/css/ux-stabilization.css?v=1','ux-stabilization');
-        loadAsset('js','/static/js/ux-stabilization.js?v=1','ux-stabilization');
-        const meta=pageMeta[page]; if(!meta) return;
-        if(!window.lifeLinkUser){try{const r=await fetch('/api/me');if(r.ok)window.lifeLinkUser=await r.json();}catch(e){return;}}
-        iconifyBrand(); organiseNavigation(); composeTopbar(meta); composeWorkspace(meta); setupMobileSidebar();
-    });
+(function(){
+ const page=(location.pathname.split('/').pop()||'index.html').replace('.html','')||'index';const pageMeta={index:{family:'command',crumb:'Command centre'},donors:{family:'directory',crumb:'People / Donors'},donor_health:{family:'clinical',crumb:'Clinical / Screening'},donations:{family:'clinical',crumb:'Clinical / Donations'},stock:{family:'inventory',crumb:'Inventory / Stock'},requests:{family:'triage',crumb:'Operations / Requests'},hospitals:{family:'directory',crumb:'Network / Hospitals'},reports:{family:'analysis',crumb:'Insights / Reports'},profile:{family:'account',crumb:'Account / Profile'},notifications:{family:'feed',crumb:'Updates / Notifications'},settings:{family:'account',crumb:'Account / Settings'}};const roleMap={Admin:['index','profile','donors','donor_health','donations','stock','requests','hospitals','reports','notifications','settings'],Staff:['index','profile','donors','donor_health','donations','stock','requests','reports','notifications','settings'],Hospital:['profile','requests','notifications','settings']};
+ function loadAsset(type,href,marker){if(document.querySelector(`[data-life-link-${marker}]`))return;const el=document.createElement(type==='css'?'link':'script');if(type==='css'){el.rel='stylesheet';el.href=href}else{el.src=href;el.defer=true}el.dataset[`lifeLink${marker.split('-').map(s=>s[0].toUpperCase()+s.slice(1)).join('')}`]='true';document.head.appendChild(el)}function addClass(el,...names){if(el)el.classList.add(...names)}function currentUser(){return window.lifeLinkUser||null}
+ function organiseNavigation(){const nav=document.querySelector('.sidebar-nav');if(!nav)return;const role=currentUser()?.role;const allowed=roleMap[role]||[];nav.querySelectorAll('.sidebar-nav-link').forEach(link=>{const href=(link.getAttribute('href')||'').split('/').pop().replace('.html','');if(link.classList.contains('logout-link')){link.closest('li').style.display='';return}link.closest('li').style.display=allowed.includes(href)?'':'none'});const ensure=(href,icon,label)=>{if(nav.querySelector(`a[href*="${href}"]`))return;const logout=nav.querySelector('.logout-link')?.closest('li');const item=document.createElement('li');item.className='sidebar-nav-item';item.innerHTML=`<a href="/static/${href}.html" class="sidebar-nav-link"><span class="sidebar-nav-icon"><i class="fas ${icon}" aria-hidden="true"></i></span><span>${label}</span></a>`;if(logout)nav.insertBefore(item,logout);else nav.appendChild(item)};ensure('notifications','fa-bell','Notifications');ensure('settings','fa-sliders','Settings');nav.querySelectorAll('.sidebar-nav-link').forEach(link=>{const href=(link.getAttribute('href')||'').split('/').pop().replace('.html','');if(!link.classList.contains('logout-link'))link.closest('li').style.display=allowed.includes(href)?'':'none'});nav.setAttribute('aria-label','Primary navigation');nav.querySelectorAll('.sidebar-section-label').forEach(x=>x.remove());const groups={donors:'Clinical workflow',stock:'Operations',reports:'Insights & system'};Object.entries(groups).forEach(([file,label])=>{const anchor=nav.querySelector(`a[href$="/${file}.html"],a[href$="${file}.html"]`);if(!anchor||anchor.closest('li').style.display==='none')return;const li=anchor.closest('li');const section=document.createElement('li');section.className='sidebar-section-label';section.textContent=label;li.before(section)});nav.querySelectorAll('.sidebar-nav-link').forEach(link=>{const href=(link.getAttribute('href')||'').split('/').pop().replace('.html','');link.classList.toggle('active',href===page)})}
+ function iconifyBrand(){const logo=document.querySelector('.sidebar-logo');if(!logo)return;logo.innerHTML='<i class="fas fa-heart-pulse" aria-hidden="true"></i>';logo.setAttribute('aria-label','Life Link');const header=logo.closest('.sidebar-header');if(header&&!header.querySelector('.sidebar-brand-row')){const row=document.createElement('div');row.className='sidebar-brand-row';logo.before(row);row.append(logo);const title=header.querySelector('.sidebar-title');if(title)row.append(title);const sub=document.createElement('div');sub.className='sidebar-subtitle';sub.textContent='Blood operations';header.append(sub)}}
+ function composeTopbar(meta){const topbar=document.querySelector('.sidebar-top-nav');if(!topbar)return;const role=currentUser()?.role;topbar.innerHTML=`<div class="topbar-content"><div class="topbar-context"><span class="topbar-context-dot"></span><span>${meta.crumb}</span></div><div class="topbar-actions"><span class="topbar-hint">Life Link operations</span>${role==='Hospital'?'':'<button class="topbar-command" type="button" aria-label="Open quick actions"><i class="fas fa-command"></i><span>Quick actions</span><kbd>⌘K</kbd></button>'}</div></div>`;const greeting=document.getElementById('userGreeting');if(greeting)topbar.querySelector('.topbar-content').prepend(greeting);topbar.querySelector('.topbar-command')?.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('lifelink:quick-actions')))}
+ function composeWorkspace(meta){const container=document.querySelector('.main-content-with-sidebar > .container');if(!container)return;addClass(document.body,'app-page','page-'+page,'workflow-'+meta.family);addClass(container,'app-workspace','workspace-'+meta.family);const header=container.querySelector('.page-header');if(header){addClass(header,'workspace-header');const title=header.querySelector('.page-title');if(title&&!header.querySelector('.page-eyebrow')){const eyebrow=document.createElement('p');eyebrow.className='page-eyebrow';eyebrow.textContent=meta.crumb;title.before(eyebrow)}}const cards=[...container.children].filter(c=>c.classList?.contains('card'));cards.forEach(card=>{const hasTable=!!card.querySelector('table');const hasControls=!!card.querySelector('select,#searchInput,input[type="search"]');if(hasTable)addClass(card,'workspace-data-card');else if(hasControls)addClass(card,'workspace-toolbar');else addClass(card,'workspace-panel');const h=card.querySelector('.card-header');if(h)addClass(h,'workspace-card-header')});container.querySelectorAll('.modal-content').forEach(modal=>addClass(modal,'ll-modal-content'));container.querySelectorAll('.table-container').forEach(table=>addClass(table,'ll-table-scroll'));if(['inventory','triage'].includes(meta.family)){const toolbar=container.querySelector('.workspace-toolbar'),dataCard=container.querySelector('.workspace-data-card');if(toolbar&&dataCard&&!container.querySelector('.workspace-layout')){const layout=document.createElement('div');layout.className='workspace-layout';toolbar.before(layout);layout.append(toolbar,dataCard);const note=document.createElement('p');note.className='workspace-rail-note';note.innerHTML=meta.family==='inventory'?'<i class="fas fa-circle-info" aria-hidden="true"></i> Filter by blood group, component, or blood bank.':'<i class="fas fa-circle-info" aria-hidden="true"></i> Prioritize urgency and status, then process the request.';toolbar.append(note)}}if(meta.family==='clinical'&&header&&!header.querySelector('.workflow-steps')){const steps=document.createElement('ol');steps.className='workflow-steps';steps.innerHTML=page==='donations'?'<li>Choose donor</li><li>Confirm screening</li><li>Record component</li>':'<li>Select donor</li><li>Capture screening</li><li>Record outcome</li>';header.append(steps)}}
+ function setupMobileSidebar(){const sidebar=document.querySelector('.sidebar');if(!sidebar||document.querySelector('.ll-menu-toggle'))return;const button=document.createElement('button');button.className='ll-menu-toggle';button.type='button';button.setAttribute('aria-label','Open navigation');button.setAttribute('aria-expanded','false');button.innerHTML='<i class="fas fa-bars" aria-hidden="true"></i>';const backdrop=document.createElement('div');backdrop.className='ll-sidebar-backdrop';document.body.append(button,backdrop);const close=()=>{sidebar.classList.remove('ll-open');document.body.classList.remove('ll-sidebar-open');button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Open navigation');button.innerHTML='<i class="fas fa-bars" aria-hidden="true"></i>'};button.addEventListener('click',()=>{const open=sidebar.classList.toggle('ll-open');document.body.classList.toggle('ll-sidebar-open',open);button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',open?'Close navigation':'Open navigation');button.innerHTML=open?'<i class="fas fa-xmark" aria-hidden="true"></i>':'<i class="fas fa-bars" aria-hidden="true"></i>'});backdrop.addEventListener('click',close);sidebar.querySelectorAll('a').forEach(a=>a.addEventListener('click',close))}
+ document.addEventListener('DOMContentLoaded',async()=>{loadAsset('css','/static/css/modern-ui.css?v=2','modern-ui');loadAsset('css','/static/css/ux-stabilization.css?v=2','ux-stabilization');loadAsset('js','/static/js/ux-stabilization.js?v=2','ux-stabilization');const meta=pageMeta[page];if(!meta)return;if(!window.lifeLinkUser){try{const r=await fetch('/api/me');if(r.ok)window.lifeLinkUser=await r.json()}catch(e){return}}iconifyBrand();organiseNavigation();composeTopbar(meta);composeWorkspace(meta);setupMobileSidebar()});
 })();
