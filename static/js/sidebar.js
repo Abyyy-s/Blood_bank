@@ -1,114 +1,96 @@
-// Initialize sidebar navigation
+// Life Link shared navigation + UI foundation
+(function ensureRedesignStyles() {
+    if (document.querySelector('link[data-lifelink-redesign]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/static/css/app-redesign.css?v=1';
+    link.dataset.lifelinkRedesign = 'true';
+    document.head.appendChild(link);
+})();
+
 function initTailbarNavigation() {
     const currentPage = window.location.pathname;
     const navLinks = document.querySelectorAll('.sidebar-nav-link');
-    
     navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (currentPage.includes(href.replace('/static/', '').replace('.html', ''))) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
+        const href = link.getAttribute('href') || '';
+        const target = href.replace('/static/', '').replace('.html', '');
+        if (target && currentPage.includes(target)) link.classList.add('active');
+        else link.classList.remove('active');
     });
 }
 
-// Load user info into sidebar
 async function loadUserToSidebar() {
     try {
         const response = await fetch('/api/me');
         if (!response.ok) return;
-        
         const user = await response.json();
-        // User info is now in the top greeting area only
+        const greeting = document.getElementById('userGreeting');
+        if (greeting) greeting.textContent = `${user.name || user.email || 'User'} · ${user.role || ''}`;
     } catch (error) {
         console.log('Could not load user info to sidebar');
     }
 }
 
-// Hide/show nav items based on user role
 function filterSidebarByRole(role) {
     const mapping = {
-        Admin: ['index.html', 'profile', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'hospitals', 'reports'],
-        Staff: ['index.html', 'profile', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'reports'],
-        Hospital: ['profile', 'requests']
+        Admin: ['index.html', 'profile', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'hospitals', 'reports', 'notifications'],
+        Staff: ['index.html', 'profile', 'donors', 'donor_health', 'donations', 'stock', 'requests', 'reports', 'notifications'],
+        Hospital: ['profile', 'requests', 'notifications']
     };
-    
     const allowed = mapping[role] || [];
-    const navLinks = document.querySelectorAll('.sidebar-nav-link');
-    
-    navLinks.forEach(link => {
-        // Always show logout link regardless of role
+    document.querySelectorAll('.sidebar-nav-link').forEach(link => {
         if (link.classList.contains('logout-link')) {
             link.style.display = '';
             return;
         }
-        
-        const href = link.getAttribute('href');
-        const isAllowed = allowed.some(item => href.includes(item));
-        link.style.display = isAllowed ? '' : 'none';
+        const href = link.getAttribute('href') || '';
+        link.style.display = allowed.some(item => href.includes(item)) ? '' : 'none';
     });
 }
 
-// Get current user and filter navigation
 async function setupSidebarNavigation() {
     try {
         const response = await fetch('/api/me');
         if (!response.ok) return;
-        
         const user = await response.json();
         filterSidebarByRole(user.role);
-        loadUserToSidebar();
+        await loadUserToSidebar();
         initTailbarNavigation();
-        loadNotificationBadge(); // Load notification badge on all pages
+        loadNotificationBadge();
     } catch (error) {
         console.log('Could not setup sidebar navigation');
     }
 }
 
-// Load and update notification badge
 async function loadNotificationBadge() {
     try {
         const response = await fetch('/notifications');
         if (!response.ok) return;
-        
         const notes = await response.json();
-        const unreadCount = notes.filter(n => !n.is_read).length;
-        updateNotificationBadge(unreadCount);
+        updateNotificationBadge(notes.filter(n => !n.is_read).length);
     } catch (error) {
         console.log('Could not load notification badge');
     }
 }
 
 function updateNotificationBadge(count) {
-    // Update bell icon badge in sidebar if it exists
     let badge = document.getElementById('notifBadge');
     const bellLink = document.querySelector('a[href*="notifications"] .sidebar-nav-icon');
     if (!bellLink) return;
-
     if (count > 0) {
         if (!badge) {
             badge = document.createElement('span');
             badge.id = 'notifBadge';
             Object.assign(badge.style, {
-                background:   '#C0392B',
-                color:        'white',
-                borderRadius: '50%',
-                fontSize:     '0.7rem',
-                width:        '18px',
-                height:       '18px',
-                display:      'inline-flex',
-                alignItems:   'center',
-                justifyContent: 'center',
-                marginLeft:   '4px',
+                background:'#d51d3b', color:'white', borderRadius:'999px',
+                fontSize:'.65rem', minWidth:'18px', height:'18px',
+                display:'inline-flex', alignItems:'center', justifyContent:'center',
+                marginLeft:'4px', padding:'0 4px'
             });
             bellLink.appendChild(badge);
         }
         badge.textContent = count > 9 ? '9+' : count;
-    } else if (badge) {
-        badge.remove();
-    }
+    } else if (badge) badge.remove();
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', setupSidebarNavigation);
