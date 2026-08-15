@@ -6,134 +6,25 @@
 
     function ensureToastRegion() {
         if (toastRegion) return toastRegion;
-        toastRegion = document.createElement('div');
-        toastRegion.className = 'll-toast-region';
-        toastRegion.setAttribute('aria-live', 'polite');
-        toastRegion.setAttribute('aria-atomic', 'false');
-        document.body.appendChild(toastRegion);
-        return toastRegion;
+        toastRegion = document.createElement('div'); toastRegion.className = 'll-toast-region'; toastRegion.setAttribute('aria-live','polite'); toastRegion.setAttribute('aria-atomic','false'); document.body.appendChild(toastRegion); return toastRegion;
     }
+    window.lifeLinkToast = function(message,type='info',duration=3800){const region=ensureToastRegion();const item=document.createElement('div');item.className=`ll-toast is-${type}`;const icon=type==='success'?'✓':type==='error'?'!':type==='warning'?'⚠':'i';item.innerHTML=`<strong aria-hidden="true">${icon}</strong><span></span><button class="ll-toast-close" type="button" aria-label="Dismiss notification">×</button>`;item.querySelector('span').textContent=message;const remove=()=>item.remove();item.querySelector('button').addEventListener('click',remove);region.appendChild(item);if(duration>0)setTimeout(remove,duration);return item;};
+    window.showAlert = (message,type='info') => window.lifeLinkToast(message,type);
 
-    window.lifeLinkToast = function (message, type = 'info', duration = 3800) {
-        const region = ensureToastRegion();
-        const item = document.createElement('div');
-        item.className = `ll-toast is-${type}`;
-        const icon = type === 'success' ? '✓' : type === 'error' ? '!' : type === 'warning' ? '⚠' : 'i';
-        item.innerHTML = `<strong aria-hidden="true">${icon}</strong><span></span><button class="ll-toast-close" type="button" aria-label="Dismiss notification">×</button>`;
-        item.querySelector('span').textContent = message;
-        const remove = () => item.remove();
-        item.querySelector('button').addEventListener('click', remove);
-        region.appendChild(item);
-        if (duration > 0) setTimeout(remove, duration);
-        return item;
-    };
-
-    window.showAlert = function (message, type = 'info') { return window.lifeLinkToast(message, type); };
-
-    function createCommandPalette() {
-        if (document.querySelector('.ll-command-palette')) return document.querySelector('.ll-command-palette');
-        const role = window.lifeLinkUser?.role || document.documentElement.dataset.userRole;
-        const hospital = role === 'Hospital';
-        const actions = hospital ? [
-            ['/static/requests.html', 'fa-clipboard-list', 'Review requests', 'Track hospital blood requirements']
-        ] : [
-            ['/static/donors.html', 'fa-user-plus', 'Register donor', 'Add a new donor record'],
-            ['/static/donations.html', 'fa-droplet', 'Record donation', 'Add a donation to inventory'],
-            ['/static/requests.html', 'fa-clipboard-list', 'Review requests', 'Process hospital requests'],
-            ['/static/stock.html', 'fa-boxes-stacked', 'Open inventory', 'Check blood stock']
-        ];
-        const modal = document.createElement('div');
-        modal.className = 'll-command-palette';
-        modal.setAttribute('role', 'dialog');
-        modal.setAttribute('aria-modal', 'true');
-        modal.setAttribute('aria-label', 'Quick actions');
-        modal.innerHTML = `<div class="ll-command-backdrop"></div><div class="ll-command-panel"><div class="ll-command-head"><div><span class="section-kicker">Life Link</span><h2>Quick actions</h2></div><button type="button" class="modal-close" aria-label="Close quick actions">&times;</button></div><div class="ll-command-list">${actions.map(a => `<a href="${a[0]}"><i class="fas ${a[1]}" aria-hidden="true"></i><span><strong>${a[2]}</strong><small>${a[3]}</small></span></a>`).join('')}</div></div>`;
-        document.body.appendChild(modal);
-        return modal;
+    function createCommandPalette(){
+        if(document.querySelector('.ll-command-palette')) return document.querySelector('.ll-command-palette');
+        const role=window.lifeLinkUser?.role||document.documentElement.dataset.userRole;const hospital=role==='Hospital';
+        const actions=hospital?[["/static/requests.html","fa-clipboard-list","Review requests","Track hospital blood requirements"]]:[["/static/donors.html","fa-user-plus","Register donor","Add a new donor record"],["/static/donations.html","fa-droplet","Record donation","Add a donation to inventory"],["/static/requests.html","fa-clipboard-list","Review requests","Process hospital requests"],["/static/stock.html","fa-boxes-stacked","Open inventory","Check blood stock"]];
+        const modal=document.createElement('div');modal.className='ll-command-palette';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-label','Quick actions');modal.innerHTML=`<div class="ll-command-backdrop"></div><div class="ll-command-panel"><div class="ll-command-head"><div><span class="section-kicker">Life Link</span><h2>Quick actions</h2></div><button type="button" class="modal-close" aria-label="Close quick actions">&times;</button></div><div class="ll-command-list">${actions.map(a=>`<a href="${a[0]}"><i class="fas ${a[1]}" aria-hidden="true"></i><span><strong>${a[2]}</strong><small>${a[3]}</small></span></a>`).join('')}</div></div>`;document.body.appendChild(modal);return modal;
     }
+    function openCommandPalette(){const modal=createCommandPalette();modal.classList.add('ll-command-open');modal.querySelector('a,button')?.focus();const close=()=>{modal.classList.remove('ll-command-open');document.removeEventListener('keydown',onKey);document.querySelector('.topbar-command')?.focus();};const onKey=e=>{if(e.key==='Escape')close();};modal.querySelector('.modal-close').onclick=close;modal.querySelector('.ll-command-backdrop').onclick=close;document.addEventListener('keydown',onKey);}
+    function bindCommandPalette(){document.addEventListener('lifelink:quick-actions',openCommandPalette);document.addEventListener('keydown',e=>{const typing=['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable;if(!typing&&(e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openCommandPalette();}});}
 
-    function openCommandPalette() {
-        const modal = createCommandPalette();
-        modal.classList.add('ll-command-open');
-        const first = modal.querySelector('a,button');
-        first?.focus();
-        const close = () => { modal.classList.remove('ll-command-open'); document.removeEventListener('keydown', onKey); document.querySelector('.topbar-command')?.focus(); };
-        const onKey = event => { if (event.key === 'Escape') close(); };
-        modal.querySelector('.modal-close').onclick = close;
-        modal.querySelector('.ll-command-backdrop').onclick = close;
-        document.addEventListener('keydown', onKey);
+    function bindModalAccessibility(){
+        document.querySelectorAll('.modal').forEach(modal=>{if(modal.dataset.a11yReady)return;modal.dataset.a11yReady='true';const observer=new MutationObserver(()=>{const open=modal.classList.contains('active');if(open){if(!modalState||modalState.modal!==modal)modalState={modal,previous:document.activeElement};modal.setAttribute('aria-hidden','false');const focusTarget=modal.querySelector('input:not([type="hidden"]),select,textarea,button:not(.modal-close)');setTimeout(()=>focusTarget?.focus(),0);}else{modal.setAttribute('aria-hidden','true');if(modalState?.modal===modal){modalState.previous?.focus?.();modalState=null;}}});observer.observe(modal,{attributes:true,attributeFilter:['class']});modal.setAttribute('aria-hidden',modal.classList.contains('active')?'false':'true');modal.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('active'))modal.querySelector('.modal-close')?.click();});});
     }
-
-    function bindCommandPalette() {
-        document.addEventListener('lifelink:quick-actions', openCommandPalette);
-        document.addEventListener('keydown', event => {
-            const typing = ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName) || document.activeElement?.isContentEditable;
-            if (!typing && (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-                event.preventDefault(); openCommandPalette();
-            }
-        });
-    }
-
-    function bindModalAccessibility() {
-        document.querySelectorAll('.modal').forEach(modal => {
-            if (modal.dataset.a11yReady) return;
-            modal.dataset.a11yReady = 'true';
-            const observer = new MutationObserver(() => {
-                const open = modal.classList.contains('active');
-                if (open) {
-                    if (!modalState || modalState.modal !== modal) modalState = { modal, previous: document.activeElement };
-                    modal.setAttribute('aria-hidden', 'false');
-                    const focusTarget = modal.querySelector('input:not([type="hidden"]),select,textarea,button:not(.modal-close)');
-                    setTimeout(() => focusTarget?.focus(), 0);
-                } else {
-                    modal.setAttribute('aria-hidden', 'true');
-                    if (modalState?.modal === modal) { modalState.previous?.focus?.(); modalState = null; }
-                }
-            });
-            observer.observe(modal, { attributes:true, attributeFilter:['class'] });
-            modal.setAttribute('aria-hidden', modal.classList.contains('active') ? 'false' : 'true');
-            modal.addEventListener('keydown', event => {
-                if (event.key !== 'Escape' || !modal.classList.contains('active')) return;
-                modal.querySelector('.modal-close')?.click();
-            });
-        });
-    }
-
-    function enhanceForms() {
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', () => {
-                const submit = form.querySelector('button[type="submit"]');
-                if (!submit || submit.dataset.keepLabel) return;
-                submit.dataset.originalLabel = submit.textContent.trim();
-                submit.disabled = true;
-                submit.setAttribute('aria-busy', 'true');
-            }, { capture:true });
-        });
-    }
-
-    function addSyncIndicator() {
-        const target = document.querySelector('.topbar-actions');
-        if (!target || target.querySelector('.ll-live-sync')) return;
-        const el = document.createElement('span');
-        el.className = 'll-live-sync';
-        el.textContent = 'Live';
-        el.title = 'Operational data refreshes in the background';
-        target.prepend(el);
-    }
-
-    function setupReveal() {
-        const targets = document.querySelectorAll('.app-workspace .card,.app-workspace .page-header,.app-workspace .table-container');
-        targets.forEach((el, i) => { if (!el.classList.contains('ll-reveal')) { el.classList.add('ll-reveal'); el.style.setProperty('--ll-delay', `${Math.min(i * 40, 220)}ms`); } });
-        if (reduceMotion() || !('IntersectionObserver' in window)) { targets.forEach(el => el.classList.add('ll-visible')); return; }
-        const observer = new IntersectionObserver((entries, obs) => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('ll-visible'); obs.unobserve(entry.target); } }), { threshold:.08 });
-        targets.forEach(el => observer.observe(el));
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        bindCommandPalette();
-        bindModalAccessibility();
-        enhanceForms();
-        addSyncIndicator();
-        setupReveal();
-    });
+    function addSyncIndicator(){const target=document.querySelector('.topbar-actions');if(!target||target.querySelector('.ll-live-sync'))return;const el=document.createElement('span');el.className='ll-live-sync';el.textContent='Live';el.title='Operational data refreshes in the background';target.prepend(el);}
+    function setupReveal(){const targets=document.querySelectorAll('.app-workspace .card,.app-workspace .page-header,.app-workspace .table-container');targets.forEach((el,i)=>{if(!el.classList.contains('ll-reveal')){el.classList.add('ll-reveal');el.style.setProperty('--ll-delay',`${Math.min(i*40,220)}ms`);}});if(reduceMotion()||!('IntersectionObserver'in window)){targets.forEach(el=>el.classList.add('ll-visible'));return;}const observer=new IntersectionObserver((entries,obs)=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('ll-visible');obs.unobserve(entry.target);}}),{threshold:.08});targets.forEach(el=>observer.observe(el));}
+    function init(){bindCommandPalette();bindModalAccessibility();addSyncIndicator();setupReveal();}
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
