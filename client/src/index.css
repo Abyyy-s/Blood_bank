@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties (used by components directly) ─── */
+:root {
+  --color-void: #020617;
+  --color-surface: #0f172a;
+  --color-elevated: #1e293b;
+  --color-border-subtle: #334155;
+
+  --color-crimson: #dc2626;
+  --color-crimson-deep: #991b1b;
+  --color-crimson-glow: rgba(220, 38, 38, 0.15);
+  --color-crimson-soft: rgba(220, 38, 38, 0.08);
+
+  --color-glass-bg: rgba(15, 23, 42, 0.65);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-border-hover: rgba(255, 255, 255, 0.14);
+
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-text-subtle: #64748b;
+
+  --color-success: #22c55e;
+  --color-success-soft: rgba(34, 197, 94, 0.12);
+  --color-warning: #f59e0b;
+  --color-warning-soft: rgba(245, 158, 11, 0.12);
+  --color-error: #ef4444;
+  --color-error-soft: rgba(239, 68, 68, 0.12);
+  --color-info: #3b82f6;
+  --color-info-soft: rgba(59, 130, 246, 0.12);
+
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-crimson: 0 0 40px rgba(220, 38, 38, 0.15);
+  --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Base Layer ─── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--color-text-primary);
+    background-color: var(--color-void);
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  input, select, textarea {
+    font-family: inherit;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+/* ─── Component Layer ─── */
+@layer components {
+  .glass {
+    background: var(--color-glass-bg);
+    border: 1px solid var(--color-glass-border);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  .glass-hover:hover {
+    border-color: var(--color-glass-border-hover);
+    box-shadow: var(--shadow-glass);
+  }
+
+  .crimson-gradient {
+    background: linear-gradient(135deg, var(--color-crimson), var(--color-crimson-deep));
+  }
+
+  .crimson-glow {
+    box-shadow: var(--shadow-crimson);
+  }
+
+  .text-gradient-crimson {
+    background: linear-gradient(135deg, #f87171, var(--color-crimson));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-subtle);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-subtle);
+}
+
+/* ─── Focus Visible ─── */
+:focus-visible {
+  outline: 2px solid var(--color-crimson);
+  outline-offset: 2px;
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
